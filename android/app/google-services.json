@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "988844295608",
+    "project_id": "aps-online-academy-3c7ac",
+    "storage_bucket": "aps-online-academy-3c7ac.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:988844295608:android:7693cc2c3929ddb0be7b4d",
+        "android_client_info": {
+          "package_name": "com.example.aps"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAom8h0_Z1MxKSUUS-qQnc7jatvUqreSUw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
