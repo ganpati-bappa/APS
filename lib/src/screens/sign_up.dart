@@ -61,6 +61,7 @@ class _SignUp extends State<StatefulWidget> {
   Widget build(BuildContext context) {
     return BlocListener<SignUpBloc, SignUpState>(listener: (context, state) {
       if (state is SignUpSuccess) {
+        Navigator.pop(context);
         openPage(
             Pages.homePage,
             FirebaseChatGroupRepository(),

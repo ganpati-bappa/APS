@@ -17,11 +17,12 @@ import 'package:lottie/lottie.dart';
 import 'package:user_repository/user_repository.dart';
 
 class AllGroups extends StatelessWidget {
-  const AllGroups({super.key});
+  AllGroups({super.key});
+  late MyUser? currentUser;  
 
   @override
   Widget build(BuildContext context) {
-    final Bloc groupsBloc = context.read<GroupsBloc>();    
+    final Bloc groupsBloc = context.read<GroupsBloc>();
     groupsBloc.add(ChatGroupsLoadingRequired());
     Map<String, Messages?> lastMessages = {};
     return Scaffold(
@@ -39,7 +40,15 @@ class AllGroups extends StatelessWidget {
                 ],
               )),
           actions: [
-            IconButton(
+            BlocBuilder<GroupsBloc, GroupsState>(
+              builder: (context,state) {
+              if (state is GroupsLoaded || state is LastMessageFetched || state is GroupsLoadedByUpdating) {
+                bool showActions = false;
+                if (currentUser!.appAdmin != null) {
+                  showActions = currentUser!.appAdmin!;
+                  }
+                if (showActions) {
+                  return IconButton(
                 onPressed: () async {
                   await Navigator.push(
                       context,
@@ -55,7 +64,15 @@ class AllGroups extends StatelessWidget {
                 },
                 icon: const Icon(
                   Icons.add,
-                )),
+                ));
+                }
+              else {
+                return const SizedBox();
+              }
+              } else {
+                return const SizedBox();
+              }
+            })
           ],
         ),
         body: BlocBuilder<GroupsBloc, GroupsState>(
@@ -90,6 +107,7 @@ class AllGroups extends StatelessWidget {
                   ),
                 );
               } else if (state is GroupsLoaded) {
+                currentUser = context.read<GroupsBloc>().currentUser;
                 if (state.groups.isNotEmpty) {
                   state.groups.map((group) {
                     lastMessages[group.id] = Messages.empty();
@@ -99,7 +117,7 @@ class AllGroups extends StatelessWidget {
                     child: ListView.builder(
                         itemCount: state.groups.length,
                         itemBuilder: (context, index) =>
-                            chatGroups(index, state.groups[index], context, groupsBloc, lastMessages)),
+                            chatGroups(index, state.groups[index], context, groupsBloc, lastMessages, currentUser!)),
                   );
                 } else {
                   return Center(
@@ -160,7 +178,7 @@ class AllGroups extends StatelessWidget {
   }
 }
 
-Widget chatGroups(int index, Groups groups, BuildContext context, Bloc groupsBloc, Map<String, Messages?> lastMessages) {
+Widget chatGroups(int index, Groups groups, BuildContext context, Bloc groupsBloc, Map<String, Messages?> lastMessages, MyUser currentUser) {
   groupsBloc
       .add(GetLastMessage( groupId: groups.id));
   return InkWell(
@@ -173,7 +191,7 @@ Widget chatGroups(int index, Groups groups, BuildContext context, Bloc groupsBlo
                 context.read<GroupsBloc>().chatGroupsRepository,
                 null,
                 null,
-                {"groups": groups}),
+                {"groups": groups, "user": currentUser}),
           ),
         );
         groupsBloc.add(GetLastMessage(groupId: groups.id));
@@ -216,31 +234,29 @@ Widget chatGroups(int index, Groups groups, BuildContext context, Bloc groupsBlo
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               getTextStatus(groups.updatedTime.microsecondsSinceEpoch),
               const SizedBox(
                 height: defaultColumnSpacingXs,
               ),
               BlocBuilder<GroupsBloc, GroupsState>(
-                buildWhen: (context, state) => (state is LastMessageFetched),
-                builder: (context, state) {
-                  if (state is LastMessageFetched) {
-                    if (state.lastMessage!.groupId!.id == groups.id) {
-                       lastMessages[groups.id] = state.lastMessage;
-                      return getUpdateAlert(
-                        lastMessages[groups.id], context.read<GroupsBloc>().userRef);
+                  buildWhen: (context, state) => (state is LastMessageFetched),
+                  builder: (context, state) {
+                    if (state is LastMessageFetched) {
+                      if (state.lastMessage != null && state.lastMessage!.groupId != null && state.lastMessage!.groupId!.id == groups.id) {
+                        lastMessages[groups.id] = state.lastMessage;
+                        return getUpdateAlert(
+                          lastMessages[groups.id], context.read<GroupsBloc>().userRef);
+                      } else {
+                        return getUpdateAlert(
+                          lastMessages[groups.id], context.read<GroupsBloc>().userRef);
+                      }
                     } else {
-                      return getUpdateAlert(
-                        lastMessages[groups.id], context.read<GroupsBloc>().userRef);
+                     return const SizedBox(width: 0, height: 0,);
                     }
-                  } else {
-                    return const SizedBox(
-                      height: 0,
-                      width: 0,
-                    );
-                  }
-                },
-              )
+                  },
+                ),
             ],
           ),
         ],
@@ -253,7 +269,7 @@ Widget getUpdateAlert(Messages? lastMessage, DocumentReference userRef) {
   if (lastMessage == null ||
       lastMessage.readBy == null ||
       lastMessage.sender == null) {
-    return const SizedBox();
+    return const SizedBox(height: 0, width: 0);
   }
   List<dynamic> readBy = lastMessage.readBy!;
   DocumentReference senderRef = lastMessage.sender!;

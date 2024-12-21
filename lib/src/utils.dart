@@ -134,7 +134,8 @@ MultiBlocProvider openPage(
       child: IndividualChatGroup(
           groupStatus: getDateLabel(convertTimestampToDateTime(
               params!["groups"].updatedTime.microsecondsSinceEpoch)),
-          group: params["groups"]),
+          group: params["groups"],
+          user: params["user"]),
     );
   } else {
     return MultiBlocProvider(

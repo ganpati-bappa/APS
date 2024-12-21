@@ -25,9 +25,10 @@ import 'package:path/path.dart' as path;
 class IndividualChatGroup extends StatefulWidget {
   final String groupStatus;
   final Groups group;
+  final MyUser user;
 
   const IndividualChatGroup(
-      {required this.groupStatus, required this.group, super.key});
+      {required this.groupStatus, required this.group, required this.user, super.key});
 
   @override
   State<IndividualChatGroup> createState() => _IndividualChatGroup();
@@ -45,7 +46,9 @@ class _IndividualChatGroup extends State<IndividualChatGroup> {
   String _fileExtension = "";
   late final Bloc groupBloc;
   late final Bloc chatsBloc;
+  late final MyUser currentUser;
   Groups? localGroup;
+  bool showActions = false;
 
   @override
   void initState() {
@@ -55,6 +58,11 @@ class _IndividualChatGroup extends State<IndividualChatGroup> {
     chatsBloc = context.read<ChatsBloc>();
     groupName = widget.group.groupName;
     groupStatus = widget.groupStatus;
+    currentUser = widget.user;
+    showActions = (currentUser.id == widget.group.admin.id);
+    if (currentUser.appAdmin != null) {
+      showActions |= currentUser.appAdmin!;
+    }
     groupPhoto = widget.group.groupPhoto!;
     _listScrollContainer.addListener(_scrollListeners);
     chatsBloc
@@ -205,7 +213,7 @@ class _IndividualChatGroup extends State<IndividualChatGroup> {
                     )
                   ],
                 )),
-            actions: [
+            actions: (showActions == true) ? [
               IconButton(
                   onPressed: () async {
                     final Groups updatedGroup = await Navigator.push(
@@ -248,7 +256,7 @@ class _IndividualChatGroup extends State<IndividualChatGroup> {
                     });
                   }, 
                   icon: const Icon(Icons.delete, size: 20,))
-            ],
+            ] : [],
           ),
           body: BlocListener<ChatsBloc, ChatState>(
             listener: (context, state) {
@@ -560,6 +568,7 @@ class _IndividualChatGroup extends State<IndividualChatGroup> {
     );
   }
 }
+
 
 Widget messageCard(
     Messages message, BuildContext context, Timestamp? previousMessageTime) {

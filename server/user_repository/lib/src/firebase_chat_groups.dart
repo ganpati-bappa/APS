@@ -236,9 +236,10 @@ class FirebaseChatGroupRepository extends FirebaseUserRepository implements Chat
   }
 
   @override
-  String? getCurrentUserId() {
+  Future<MyUser> getCurrentUser() async {
     try {
-      return loggedInUser;
+      DocumentSnapshot doc = await userCollection.doc(loggedInUser!).get();
+      return MyUser.fromEntity(MyUserEntity.fromDocument(doc.data() as Map<String, dynamic>));
     } catch (ex) {
       log(ex.toString());
       rethrow;
@@ -258,9 +259,10 @@ class FirebaseChatGroupRepository extends FirebaseUserRepository implements Chat
   }
 
   @override
-  DocumentReference getCurrentUserReference()  {
+  DocumentReference getUserReference(String? id)  {
     try {
-      return userCollection.doc(loggedInUser);
+      id ??= loggedInUser!;
+      return userCollection.doc(id);
     } catch (ex) {
       log(ex.toString());
       rethrow;
@@ -317,7 +319,7 @@ class FirebaseChatGroupRepository extends FirebaseUserRepository implements Chat
   Future<void> chatUpdateReadBy(String messageId, List<dynamic> users) async {
     try {
       List<dynamic> readBy = await messagesCollection.doc(messageId).get().then((snapshot) => snapshot.data()!["readBy"]);
-      readBy.add(getCurrentUserReference());
+      readBy.add(getUserReference(null));
       await messagesCollection.doc(messageId).update({
         'readBy': readBy
       });

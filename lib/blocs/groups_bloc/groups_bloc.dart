@@ -17,8 +17,9 @@ class GroupsBloc extends Bloc<GroupsEvent, GroupsState> {
   Map<String, Messages> lastMessages = {};
   int offset = 0,limit = 10;
   StreamSubscription? _groupSubscription;
+  MyUser? currentUser;
 
-  DocumentReference get userRef  => chatGroupsRepository.getCurrentUserReference();
+  DocumentReference get userRef  => chatGroupsRepository.getUserReference(null);
 
   DocumentReference groupRef(String id) => chatGroupsRepository.getGroupsReference(id);
 
@@ -30,8 +31,7 @@ class GroupsBloc extends Bloc<GroupsEvent, GroupsState> {
         if (groups.isNotEmpty) {
           emit(GroupsLoaded(groups: groups));
         }
-        final String? loggedInUser = chatGroupsRepository.getCurrentUserId();
-        if (loggedInUser == null) return;
+        currentUser ??= await chatGroupsRepository.getCurrentUser();
         lastMessages = {};
         groupsRef = await chatGroupsRepository.getUserGroups();
         _groupSubscription = chatGroupsRepository.getGroupsCollectionReference().orderBy("updatedTime",descending: true).snapshots().listen((snapshot) {

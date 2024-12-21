@@ -18,7 +18,7 @@ class CreateGroupBloc extends Bloc<CreateGroupEvent, CreateGroupState> {
           throw Exception("Group Name can not be empty");
         }
         final List<DocumentReference> userDocumentReference = await chatGroupsRepository.getDocumentReferenceOfUsers(event.users);
-        final DocumentReference currentUserReference = chatGroupsRepository.getCurrentUserReference();
+        final DocumentReference currentUserReference = chatGroupsRepository.getUserReference(event.admin.id);
         await chatGroupsRepository.addGroups(
           Groups(
             id: "",

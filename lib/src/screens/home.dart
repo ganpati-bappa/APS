@@ -1,3 +1,4 @@
+import 'package:aps/blocs/groups_bloc/groups_bloc.dart';
 import 'package:aps/blocs/home_bloc/home_bloc.dart';
 import 'package:aps/src/constants/colors.dart';
 import 'package:aps/src/constants/images.dart';
@@ -29,7 +30,7 @@ class _HomePage extends State<StatefulWidget> {
   Widget build(BuildContext context) {
     final List<Widget> pages = [
       homePage(context),
-      const AllGroups(),
+      AllGroups(),
       const UserProfile()
     ];
     return Scaffold(
@@ -259,7 +260,7 @@ Widget getPagesPerIndex(int index, BuildContext context) {
       return homePage(context);
     case 1:
       return Navigator(
-        onGenerateRoute: (RouteSettings settings) => MaterialPageRoute(builder: (newContext) => const AllGroups()),
+        onGenerateRoute: (RouteSettings settings) => MaterialPageRoute(builder: (newContext) => AllGroups()),
       );
     default:
       return const UserProfile();

@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
             darkTheme: themes.darkTheme,
             themeMode: ThemeMode.light,
             debugShowCheckedModeBanner: false,
-            home: BlocBuilder<AuthenticationBlocBloc, AuthenticationBlocState>(
+            home: BlocBuilder<AuthenticationBlocBloc, AuthenticationBlocState>  (
               builder: (context, state) {
               if (state.status == AuthenticationStatus.authenticated) {
                 return openPage(Pages.homePage, chatGroupsRepository, userRepository, state.user);

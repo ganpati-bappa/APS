@@ -14,8 +14,8 @@ abstract class ChatGroupsRepository {
   Future<void> deleteGroups(Groups group);
   Future<List<MyUser>> getAllUsers();
   Future<List<DocumentReference>> getDocumentReferenceOfUsers(List<MyUser> users);
-  DocumentReference getCurrentUserReference();
-  String? getCurrentUserId();
+  DocumentReference getUserReference(String? id);
+  Future<MyUser> getCurrentUser();
   DocumentReference getGroupsReference(String id);
   Future<void> uploadChatImage(String path,DocumentReference senderRef, DocumentReference groupId);
   Future<void> uploadChatDocs(String path,String filename, DocumentReference senderRef, DocumentReference groupId);
