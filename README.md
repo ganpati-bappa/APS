@@ -1,16 +1,22 @@
-# aps
+# APS
 
-A new Flutter project.
+A User Friendly real time chatting application for ios/android
 
-## Getting Started
+## Functionalities:
+- Real Time Chatting
+- User Authentication
+- Image/PDF upload to firebase store
+- Cache Manipulation
+- Firestore Messaging
 
-This project is a starting point for a Flutter application.
+### Screenshots:
+- Login Screen:
+![image](https://github.com/user-attachments/assets/1b4e68dc-a3b4-4831-951a-5fac16ae7c0a)
 
-A few resources to get you started if this is your first Flutter project:
+- Home Page:
+![image](https://github.com/user-attachments/assets/020c6e62-1a15-464b-8d39-18bd72a9dd4d)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- Chats Page:
+![image](https://github.com/user-attachments/assets/12295a65-db60-4486-a19e-749f94ba4368)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+
