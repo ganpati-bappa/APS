@@ -3,12 +3,15 @@ import 'dart:io';
 import 'package:aps/blocs/chats_bloc/chat_bloc.dart';
 import 'package:aps/blocs/edit_group/edit_group_bloc.dart';
 import 'package:aps/blocs/groups_bloc/groups_bloc.dart';
+import 'package:aps/blocs/personal_chat_creation/personal_chat_creation_bloc.dart';
 import 'package:aps/src/constants/colors.dart';
 import 'package:aps/src/constants/images.dart';
 import 'package:aps/src/constants/spacings.dart';
+import 'package:aps/src/constants/styles.dart';
 import 'package:aps/src/constants/texts.dart';
 import 'package:aps/src/screens/editGroup.dart';
 import 'package:aps/src/screens/groups.dart';
+import 'package:aps/src/screens/personal_chat_creation.dart';
 import 'package:aps/src/utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -28,7 +31,10 @@ class IndividualChatGroup extends StatefulWidget {
   final MyUser user;
 
   const IndividualChatGroup(
-      {required this.groupStatus, required this.group, required this.user, super.key});
+      {required this.groupStatus,
+      required this.group,
+      required this.user,
+      super.key});
 
   @override
   State<IndividualChatGroup> createState() => _IndividualChatGroup();
@@ -47,6 +53,7 @@ class _IndividualChatGroup extends State<IndividualChatGroup> {
   late final Bloc groupBloc;
   late final Bloc chatsBloc;
   late final MyUser currentUser;
+  bool pdfAvalaibility = false;
   Groups? localGroup;
   bool showActions = false;
 
@@ -96,16 +103,8 @@ class _IndividualChatGroup extends State<IndividualChatGroup> {
                   },
                   icon: const Icon(
                     Icons.arrow_back,
-                    color: Colors.white60,
+                    color: Colors.white70,
                   )),
-              actions: [
-                IconButton(
-                    onPressed: () => handler(),
-                    icon: const Icon(
-                      Icons.check,
-                      color: Colors.white60,
-                    ))
-              ],
             ),
             body: Column(
               children: [
@@ -132,23 +131,36 @@ class _IndividualChatGroup extends State<IndividualChatGroup> {
                         child: TextField(
                           textAlign: TextAlign.left,
                           textAlignVertical: TextAlignVertical.center,
-                          maxLength: 40,
                           style: const TextStyle(
-                              color: Colors.white, fontSize: 16),
+                              color: Colors.white, fontSize: 14),
                           controller: _pdfNameController,
                           cursorColor: Colors.white54,
-                          decoration: const InputDecoration(
+                          decoration: InputDecoration(
+                              suffixIcon: InkWell(
+                                onTap: () => handler(),
+                                child: Container(
+                                  decoration: const BoxDecoration(
+                                      color: Color.fromARGB(255, 22, 16, 30),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(10))),
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(10.0),
+                                    child:
+                                        Icon(Icons.send, color: Colors.white),
+                                  ),
+                                ),
+                              ),
                               border: InputBorder.none,
                               focusColor: Colors.white54,
                               focusedBorder: InputBorder.none,
-                              prefixIcon: Icon(
+                              prefixIcon: const Icon(
                                 Icons.picture_as_pdf,
                                 color: Colors.white,
                               ),
-                              hintStyle: TextStyle(
-                                  color: Colors.white54, fontSize: 16),
+                              hintStyle: const TextStyle(
+                                  color: Colors.white54, fontSize: 12),
                               hintText: pdfFileNameHint,
-                              contentPadding: EdgeInsets.all(0)),
+                              contentPadding: const EdgeInsets.all(0)),
                         )),
                   ),
                 )
@@ -161,414 +173,552 @@ class _IndividualChatGroup extends State<IndividualChatGroup> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<ChatsBloc, ChatState>(
-      listenWhen: (context, state) => state is ChatGroupUpdated || state is GroupDeleted,
-      listener: (_, state) {
-        if (state is ChatGroupUpdated) {
-          setState(() {
-            localGroup = state.group;
-            groupName = localGroup!.groupName;
-            groupStatus = getDateLabel(convertTimestampToDateTime(
-                localGroup!.updatedTime.microsecondsSinceEpoch));
-            groupPhoto = localGroup!.groupPhoto!;
-          });
-        }
-        else if (state is GroupDeleted) {
-          Navigator.pop(context);
-        }
-      },
-      child: BlocBuilder<ChatsBloc, ChatState>(builder: (context, state) {
-        if (state is GroupDeletionInProgress) {
-          return loadingPage(context, "Zzzzzhhhhh...", " Don’t mind the noise, just vacuuming your messages.", {"loadingAnimation": deleteLoading});
-        } else {
-          return Scaffold(
-          backgroundColor: backgroundColor,
-          appBar: AppBar(
-            backgroundColor: backgroundColor,
-            titleSpacing: 0,
-            title: Padding(
-                padding: const EdgeInsets.only(
-                    right: defaultPaddingXs,
-                    top: defaultPaddingXs,
-                    bottom: defaultPaddingXs),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    getGroupDp(context, groupName, groupPhoto, 10, false),
-                    const SizedBox(width: defaultColumnSpacingSm),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          groupName,
-                          style: Theme.of(context).textTheme.displayLarge,
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        Text('Last updated on $groupStatus',
-                            style: Theme.of(context).textTheme.bodyMedium)
-                      ],
-                    )
-                  ],
-                )),
-            actions: (showActions == true) ? [
-              IconButton(
-                  onPressed: () async {
-                    final Groups updatedGroup = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => BlocProvider.value(
-                                  value:
-                                      BlocProvider.of<EditGroupBloc>(context),
-                                  child: EditGroup(group: localGroup!),
-                                )));
-                    setState(() {
-                      localGroup = updatedGroup;
-                      if (groupName != updatedGroup.groupName) {
-                        groupName = localGroup!.groupName;
-                      }
-                      if (groupPhoto != updatedGroup.groupPhoto) {
-                        groupPhoto = localGroup!.groupPhoto;
-                      }
-                    });
-                  },
-                  icon: const Icon(
-                    Icons.edit,
-                    size: 20,
-                  )),
-                IconButton(
-                  onPressed: () {
-                    showDialog(context: context, builder: (BuildContext context) {
-                      return AlertDialog(
-                        actionsPadding: const EdgeInsets.only(right: defaultPaddingMd, bottom: defaultColumnSpacingSm, left: defaultPaddingMd),
-                        title: Text("Delete $groupName", style: Theme.of(context).textTheme.labelLarge,),
-                        content: Text("Are you sure you want to delete $groupName. As Group information can not be restored later."),
-                        actions: [
-                          TextButton(onPressed: () {Navigator.pop(context);}, child: const Text("Cancel", style: TextStyle(color: Colors.grey, fontSize: 16),)),
-                          TextButton(onPressed: () {
-                            Navigator.pop(context);
-                              chatsBloc.add(GroupDeletionRequired(group: localGroup!));
-                          }, child: const Text("Delete", style: TextStyle(fontSize: 16, color: Color.fromARGB(255, 223, 86, 76)),))
-                        ],
-                      );
-                    });
-                  }, 
-                  icon: const Icon(Icons.delete, size: 20,))
-            ] : [],
-          ),
-          body: BlocListener<ChatsBloc, ChatState>(
-            listener: (context, state) {
-              if (state is NoMoreMessagesToLoad) {
-                hasMoreMessagesToLoad = false;
-                setState(() {
-                  isMoreLoading = false;
-                });
-                // ScaffoldMessenger.of(context).showSnackBar(
-                //     const SnackBar(content: Text(chatsLoadedCompletely)));
-              }
-            },
-            child: SafeArea(
-              child: Column(
-                children: [
-                  BlocBuilder<ChatsBloc, ChatState>(
-                      buildWhen: (context, state) =>
-                          state is ChatLoaded ||
-                          state is ChatLoading ||
-                          state is SendingMessage,
-                      builder: (context, state) {
-                        if (state is ChatLoading) {
-                          return Expanded(
-                            child: Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Lottie.asset(defaultLoading,
-                                      width: 180, height: 180),
-                                  const SizedBox(
-                                    height: defaultColumnSpacing,
-                                  ),
-                                  Text(
-                                    classroomGroupsLoadingHeading,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .displayLarge,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text(
-                                    chatsLoadingSubheading,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headlineSmall,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ],
-                              ),
+        listenWhen: (context, state) =>
+            state is ChatGroupUpdated || state is GroupDeleted || state is DocLoadingMessages,
+        listener: (_, state) {
+          if (state is ChatGroupUpdated) {
+            setState(() {
+              localGroup = state.group;
+              groupName = localGroup!.groupName;
+              groupStatus = getDateLabel(convertTimestampToDateTime(
+                  localGroup!.updatedTime.microsecondsSinceEpoch));
+              groupPhoto = localGroup!.groupPhoto!;
+            });
+          } else if (state is GroupDeleted) {
+            Navigator.pop(context);
+          } else if (state is DocLoadingMessages) {
+            ScaffoldMessenger.of(_).hideCurrentSnackBar();
+            ScaffoldMessenger.of(_).showSnackBar(SnackBar(content: customSnackbar(context, state.message)));
+          }
+        },
+        child: BlocBuilder<ChatsBloc, ChatState>(builder: (context, state) {
+          if (state is GroupDeletionInProgress) {
+            return loadingPage(
+                context,
+                "Zzzzzhhhhh...",
+                " Don’t mind the noise, just vacuuming your messages.",
+                {"loadingAnimation": deleteLoading});
+          } else {
+            return Scaffold(
+                backgroundColor: backgroundColor,
+                appBar: AppBar(
+                  backgroundColor: backgroundColor,
+                  titleSpacing: 0,
+                  title: Padding(
+                      padding: const EdgeInsets.only(
+                          right: defaultPaddingXs,
+                          top: defaultPaddingXs,
+                          bottom: defaultPaddingXs),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          getGroupDp(context, groupName, groupPhoto, 10, false),
+                          const SizedBox(width: defaultColumnSpacingSm),
+                          Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  groupName,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: pageHeadingStyle,
+                                ),
+                                const SizedBox(
+                                  height: 2,
+                                ),
+                                Text('Last updated on $groupStatus',
+                                    overflow: TextOverflow.ellipsis,
+                                    style: chatUpdatedByStyles)
+                              ],
                             ),
-                          );
-                        } else if (state is ChatLoaded) {
-                          if (state.messages.isNotEmpty) {
-                            return Expanded(
-                                child: ListView.builder(
-                              controller: _listScrollContainer,
-                              reverse: true,
-                              itemCount: (isMoreLoading)
-                                  ? state.messages.length + 1
-                                  : state.messages.length,
-                              itemBuilder: (context, index) {
-                                if (index < state.messages.length) {
-                                  return messageCard(
-                                      state.messages[index],
-                                      context,
-                                      (index > 0)
-                                          ? state.messages[index - 1].time
-                                          : null);
-                                } else {
-                                  return const Center(
-                                      child: CircularProgressIndicator(
-                                    color: Colors.black45,
-                                    strokeWidth: 3,
-                                  ));
-                                }
+                          )
+                        ],
+                      )),
+                  actions: (showActions == true)
+                      ? [
+                          (widget.group.type != "Personal")
+                              ? IconButton(
+                                  onPressed: () async {
+                                    final Groups updatedGroup =
+                                        await Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (_) =>
+                                                    BlocProvider.value(
+                                                      value: BlocProvider.of<
+                                                              EditGroupBloc>(
+                                                          context),
+                                                      child: EditGroup(
+                                                          group: localGroup!),
+                                                    )));
+                                    setState(() {
+                                      localGroup = updatedGroup;
+                                      if (groupName != updatedGroup.groupName) {
+                                        groupName = localGroup!.groupName;
+                                      }
+                                      if (groupPhoto !=
+                                          updatedGroup.groupPhoto) {
+                                        groupPhoto = localGroup!.groupPhoto;
+                                      }
+                                    });
+                                  },
+                                  icon: const Icon(
+                                    Icons.edit,
+                                    size: 20,
+                                  ))
+                              : const SizedBox(),
+                          IconButton(
+                              onPressed: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                        ),
+                                        backgroundColor: backgroundColor,
+                                        actionsPadding: const EdgeInsets.only(
+                                            right: defaultPaddingMd,
+                                            bottom: defaultColumnSpacingSm,
+                                            left: defaultPaddingMd),
+                                        title: Text(
+                                          "Delete $groupName",
+                                          style: pageHeadingStyle,
+                                        ),
+                                        content: Text(
+                                            "Are you sure you want to delete $groupName. As Group information can not be restored later."),
+                                        actions: [
+                                          TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: const Text(
+                                                "Cancel",
+                                                style: TextStyle(
+                                                    color: Colors.grey,
+                                                    fontSize: 16),
+                                              )),
+                                          TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                                chatsBloc.add(
+                                                    GroupDeletionRequired(
+                                                        group: localGroup!));
+                                              },
+                                              child: const Text(
+                                                "Delete",
+                                                style: TextStyle(
+                                                    fontSize: 16,
+                                                    color: Color.fromARGB(
+                                                        255, 223, 86, 76)),
+                                              ))
+                                        ],
+                                      );
+                                    });
                               },
-                            ));
-                          } else {
-                            return Expanded(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
+                              icon: const Icon(
+                                Icons.delete,
+                                size: 20,
+                              ))
+                        ]
+                      : [],
+                ),
+                body: BlocListener<ChatsBloc, ChatState>(
+                  listener: (context, state) {
+                    if (state is NoMoreMessagesToLoad) {
+                      hasMoreMessagesToLoad = false;
+                      setState(() {
+                        isMoreLoading = false;
+                      });
+                      // ScaffoldMessenger.of(context).showSnackBar(
+                      //     const SnackBar(content: Text(chatsLoadedCompletely)));
+                    }
+                  },
+                  child: SafeArea(
+                    child: Column(
+                      children: [
+                        BlocBuilder<ChatsBloc, ChatState>(
+                            buildWhen: (context, state) =>
+                                state is ChatLoaded ||
+                                state is ChatLoading ||
+                                state is SendingMessage,
+                            builder: (context, state) {
+                              if (state is ChatLoading) {
+                                return Expanded(
+                                  child: Center(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Lottie.asset(defaultLoading,
+                                            width: 220, height: 220),
+                                        const SizedBox(
+                                          height: defaultColumnSpacing,
+                                        ),
+                                        Text(
+                                          classroomGroupsLoadingHeading,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .displayLarge,
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(
+                                          chatsLoadingSubheading,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headlineSmall,
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              } else if (state is ChatLoaded) {
+                                if (state.messages.isNotEmpty) {
+                                  return Expanded(
+                                      child: ListView.builder(
+                                    controller: _listScrollContainer,
+                                    reverse: true,
+                                    itemCount: (isMoreLoading)
+                                        ? state.messages.length + 1
+                                        : state.messages.length,
+                                    itemBuilder: (context, index) {
+                                      if (index < state.messages.length) {
+                                        return messageCard(
+                                            state.messages[index],
+                                            context,
+                                            (index > 0)
+                                                ? state.messages[index - 1].time
+                                                : null);
+                                      } else {
+                                        return const Center(
+                                            child: CircularProgressIndicator(
+                                          color: Colors.black45,
+                                          strokeWidth: 3,
+                                        ));
+                                      }
+                                    },
+                                  ));
+                                } else {
+                                  return Expanded(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Lottie.asset(emptyChat,
+                                            width: 200, height: 200),
+                                        const SizedBox(
+                                          height: defaultColumnSpacing,
+                                        ),
+                                        Text(
+                                          emptyChatsMessageHeading,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .displayLarge,
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(
+                                          emptyChatsMessageSubheading,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headlineSmall,
+                                          textAlign: TextAlign.center,
+                                        )
+                                      ],
+                                    ),
+                                  );
+                                }
+                              } else if (state is SendingMessage) {
+                                return Expanded(
+                                    child: ListView.builder(
+                                        controller: _listScrollContainer,
+                                        reverse: true,
+                                        itemCount: (isMoreLoading)
+                                            ? state.messages.length + 1
+                                            : state.messages.length,
+                                        itemBuilder: (context, index) {
+                                          if (index < state.messages.length) {
+                                            return messageCard(
+                                                state.messages[index],
+                                                context,
+                                                (index > 0)
+                                                    ? state.messages[index - 1]
+                                                        .time
+                                                    : null);
+                                          } else {
+                                            return const Center(
+                                                child:
+                                                    CircularProgressIndicator(
+                                              color: Colors.black45,
+                                              strokeWidth: 3,
+                                            ));
+                                          }
+                                        }));
+                              } else {
+                                return Expanded(
+                                  child: Center(
+                                      child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Lottie.asset(defaultLoading,
+                                          width: 180, height: 180),
+                                      const SizedBox(
+                                        height: defaultColumnSpacing,
+                                      ),
+                                      Text(
+                                        classroomGroupsLoadingHeading,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .displayLarge,
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      Text(
+                                        chatsLoadingSubheading,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headlineSmall,
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ],
+                                  )),
+                                );
+                              }
+                            }),
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Padding(
+                            padding: const EdgeInsets.all(defaultPaddingXs),
+                            child: SafeArea(
+                              child: Row(
                                 children: [
-                                  Lottie.asset(emptyChat,
-                                      width: 200, height: 200),
+                                  Expanded(
+                                    child: Container(
+                                      decoration: BoxDecoration(boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.3),
+                                          blurRadius: 8,
+                                          offset: const Offset(2, 4),
+                                        ),
+                                      ], borderRadius: sendButtonRadius),
+                                      child: TextField(
+                                        maxLines: 2,
+                                        minLines: 1,
+                                        keyboardType: TextInputType.multiline,
+                                        controller: _textEditingController,
+                                        decoration: InputDecoration(
+                                          border: OutlineInputBorder(
+                                              borderRadius: sendButtonRadius,
+                                              borderSide: BorderSide.none),
+                                          hoverColor: Colors.white,
+                                          focusColor: Colors.white,
+                                          filled: true,
+                                          prefix: const SizedBox(
+                                            width: 10,
+                                          ),
+                                          suffixIcon: SizedBox(
+                                            width: (widget.group.type ==
+                                                    "Personal")
+                                                ? 100
+                                                : 150,
+                                            child: Row(
+                                              children: [
+                                                (widget.group.type !=
+                                                        "Personal")
+                                                    ? IconButton(
+                                                        onPressed: () {
+                                                          Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                  builder: (context) =>
+                                                                      openPage(
+                                                                          Pages
+                                                                              .personalChatCreationPage,
+                                                                          context.read<GroupsBloc>().chatGroupsRepository,
+                                                                          null,
+                                                                          null,
+                                                                          {
+                                                                            "group":
+                                                                                localGroup,
+                                                                            "user":
+                                                                                widget.user
+                                                                          })));
+                                                        },
+                                                        icon: const Icon(
+                                                          Icons.chat_outlined,
+                                                          color: Colors.green,
+                                                        ),
+                                                      )
+                                                    : const SizedBox(
+                                                        width: 0,
+                                                      ),
+                                                IconButton(
+                                                    onPressed: () async {
+                                                      openBottomSheetPDFTypePicker(
+                                                          context,
+                                                          (params) async {
+                                                        FilePickerResult?
+                                                            result =
+                                                            await FilePicker
+                                                                .platform
+                                                                .pickFiles();
+                                                        if (params["type"] ==
+                                                            "docx") {
+                                                          if (result != null) {
+                                                            String? filePath =
+                                                                result
+                                                                    .files
+                                                                    .single
+                                                                    .path;
+                                                            _fileExtension =
+                                                                path.extension(
+                                                                    filePath!);
+                                                            if (_fileExtension != ".pdf") {
+                                                              setState(() {
+                                                                 context.read<ChatsBloc>().add(SendPDF(
+                                                                        filePath:
+                                                                            filePath,
+                                                                        fileName: result.names.single!
+                                                                            .trim(),type: params["type"]));
+                                                                            
+                                                                Navigator.pop(context);
+                                                              });
+                                                            }
+                                                          }     
+                                                        } else {
+                                                          if (result != null) {
+                                                            String? filePath =
+                                                                result
+                                                                    .files
+                                                                    .single
+                                                                    .path;
+                                                            _fileExtension =
+                                                                path.extension(
+                                                                    filePath!);
+                                                            if (_fileExtension ==
+                                                                ".pdf") {
+                                                              setState(() {
+                                                                _openPdfFile(
+                                                                    context,
+                                                                    filePath,
+                                                                    () {
+                                                                  if (_pdfNameController
+                                                                      .text
+                                                                      .trim()
+                                                                      .isNotEmpty) {
+                                                                    context.read<ChatsBloc>().add(SendPDF(
+                                                                        filePath:
+                                                                            filePath,
+                                                                        fileName: _pdfNameController
+                                                                            .text
+                                                                            .trim(),type: params["type"]));
+                                                                    Navigator.pop(
+                                                                        context);
+                                                                    Navigator.pop(
+                                                                        context);
+                                                                  }
+                                                                });
+                                                              });
+                                                            }
+                                                          }
+                                                        }
+                                                      });
+                                                    },
+                                                    icon: const Icon(
+                                                      Icons.folder_copy,
+                                                      color: Colors.orange,
+                                                    )),
+                                                IconButton(
+                                                    onPressed: () async {
+                                                      openBottomSheetImagePicker(
+                                                          context, (params) {
+                                                        setState(() {
+                                                          if (params["image"] !=
+                                                              null) {
+                                                            context
+                                                                .read<
+                                                                    ChatsBloc>()
+                                                                .add(SendImage(
+                                                                    imagePath:
+                                                                        params[
+                                                                            "image"]));
+                                                            Navigator.pop(
+                                                                context);
+                                                          }
+                                                        });
+                                                      });
+                                                    },
+                                                    icon: const Icon(
+                                                      Icons.image,
+                                                      color: Colors.blue,
+                                                    )),
+                                              ],
+                                            ),
+                                          ),
+                                          fillColor: Colors.white,
+                                          hintText: inputChatText,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                   const SizedBox(
-                                    height: defaultColumnSpacing,
+                                    width: 5,
                                   ),
-                                  Text(
-                                    emptyChatsMessageHeading,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .displayLarge,
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text(
-                                    emptyChatsMessageSubheading,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headlineSmall,
-                                    textAlign: TextAlign.center,
+                                  InkWell(
+                                    onTap: () {
+                                      if (_textEditingController
+                                          .text.isNotEmpty) {
+                                        (context).read<ChatsBloc>().add(
+                                            SendMessage(
+                                                message: _textEditingController
+                                                    .text
+                                                    .trim()));
+                                        _textEditingController.clear();
+                                      }
+                                    },
+                                    child: Container(
+                                      decoration: const BoxDecoration(
+                                          color:
+                                              Color.fromARGB(255, 22, 16, 30),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10))),
+                                      child: const Padding(
+                                        padding: EdgeInsets.all(10.0),
+                                        child: Icon(Icons.send,
+                                            color: Colors.white),
+                                      ),
+                                    ),
                                   )
                                 ],
                               ),
-                            );
-                          }
-                        } else if (state is SendingMessage) {
-                          return Expanded(
-                              child: ListView.builder(
-                                  controller: _listScrollContainer,
-                                  reverse: true,
-                                  itemCount: (isMoreLoading)
-                                      ? state.messages.length + 1
-                                      : state.messages.length,
-                                  itemBuilder: (context, index) {
-                                    if (index < state.messages.length) {
-                                      return messageCard(
-                                          state.messages[index],
-                                          context,
-                                          (index > 0)
-                                              ? state.messages[index - 1].time
-                                              : null);
-                                    } else {
-                                      return const Center(
-                                          child: CircularProgressIndicator(
-                                        color: Colors.black45,
-                                        strokeWidth: 3,
-                                      ));
-                                    }
-                                  }));
-                        } else {
-                          return Expanded(
-                            child: Center(
-                                child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Lottie.asset(defaultLoading,
-                                    width: 180, height: 180),
-                                const SizedBox(
-                                  height: defaultColumnSpacing,
-                                ),
-                                Text(
-                                  classroomGroupsLoadingHeading,
-                                  style:
-                                      Theme.of(context).textTheme.displayLarge,
-                                  textAlign: TextAlign.center,
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Text(
-                                  chatsLoadingSubheading,
-                                  style:
-                                      Theme.of(context).textTheme.headlineSmall,
-                                  textAlign: TextAlign.center,
-                                ),
-                              ],
-                            )),
-                          );
-                        }
-                      }),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Padding(
-                      padding: const EdgeInsets.all(defaultPaddingXs),
-                      child: SafeArea(
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Container(
-                                decoration: BoxDecoration(boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.3),
-                                    blurRadius: 8,
-                                    offset: const Offset(2, 4),
-                                  ),
-                                ], borderRadius: sendButtonRadius),
-                                child: TextField(
-                                  maxLines: 5,
-                                  minLines: 1,
-                                  keyboardType: TextInputType.multiline,
-                                  controller: _textEditingController,
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(
-                                        borderRadius: sendButtonRadius,
-                                        borderSide: BorderSide.none),
-                                    hoverColor: Colors.white,
-                                    focusColor: Colors.white,
-                                    filled: true,
-                                    prefix: const SizedBox(
-                                      width: 10,
-                                    ),
-                                    suffixIcon: SizedBox(
-                                      width: 100,
-                                      child: Row(
-                                        children: [
-                                          IconButton(
-                                              onPressed: () async {
-                                                FilePickerResult? result =
-                                                    await FilePicker.platform
-                                                        .pickFiles();
-                                                if (result != null) {
-                                                  String? filePath =
-                                                      result.files.single.path;
-                                                  _fileExtension =
-                                                      path.extension(filePath!);
-                                                  if (_fileExtension ==
-                                                      ".pdf") {
-                                                    setState(() {
-                                                      _openPdfFile(
-                                                          context, filePath,
-                                                          () {
-                                                        if (_pdfNameController
-                                                            .text
-                                                            .trim()
-                                                            .isNotEmpty) {
-                                                          context
-                                                              .read<ChatsBloc>()
-                                                              .add(SendPDF(
-                                                                  filePath:
-                                                                      filePath,
-                                                                  fileName:
-                                                                      _pdfNameController
-                                                                          .text
-                                                                          .trim()));
-                                                          Navigator.pop(
-                                                              context);
-                                                        }
-                                                      });
-                                                    });
-                                                  }
-                                                }
-                                              },
-                                              icon: const Icon(
-                                                Icons.picture_as_pdf,
-                                                color: Colors.grey,
-                                              )),
-                                          IconButton(
-                                              onPressed: () async {
-                                                openBottomSheetImagePicker(
-                                                    context, (params) {
-                                                  setState(() {
-                                                    if (params["image"] !=
-                                                        null) {
-                                                      context
-                                                          .read<ChatsBloc>()
-                                                          .add(SendImage(
-                                                              imagePath: params[
-                                                                  "image"]));
-                                                      Navigator.pop(context);
-                                                    }
-                                                  });
-                                                });
-                                              },
-                                              icon: const Icon(
-                                                Icons.image,
-                                                color: Colors.grey,
-                                              )),
-                                        ],
-                                      ),
-                                    ),
-                                    fillColor: Colors.white,
-                                    hintText: inputChatText,
-                                  ),
-                                ),
-                              ),
                             ),
-                            const SizedBox(
-                              width: 5,
-                            ),
-                            InkWell(
-                              onTap: () {
-                                if (_textEditingController.text.isNotEmpty) {
-                                  (context).read<ChatsBloc>().add(SendMessage(
-                                      message:
-                                          _textEditingController.text.trim()));
-                                  _textEditingController.clear();
-                                }
-                              },
-                              child: Container(
-                                decoration: const BoxDecoration(
-                                    color: Color.fromARGB(255, 22, 16, 30),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10))),
-                                child: const Padding(
-                                  padding: EdgeInsets.all(10.0),
-                                  child: Icon(Icons.send, color: Colors.white),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
+                          ),
+                        )
+                      ],
                     ),
-                  )
-                ],
-              ),
-            ),
-          ));
-        }
-      })
-    );
+                  ),
+                ));
+          }
+        }));
   }
 }
-
 
 Widget messageCard(
     Messages message, BuildContext context, Timestamp? previousMessageTime) {
@@ -654,7 +804,7 @@ Widget getGroupDp(BuildContext context, String groupName, String? groupPhoto,
   } else if (groupPhoto == null || groupPhoto.trim().isEmpty) {
     return ProfilePicture(
       fontsize: size,
-      name: groupName,
+      name: groupName.trim(),
       radius: size * 2,
     );
   } else {

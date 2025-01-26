@@ -9,7 +9,7 @@ abstract class ChatGroupsRepository {
   Future<List<Future<Groups>>> getGroups(List<DocumentReference> userGroups);
   Future<Messages> getLastMessage(String ? groupId);
   Future<List<DocumentReference>> getUserGroups();
-  Future<void> addGroups(Groups group);
+  Future<DocumentReference> addGroups(Groups group);
   Future<Groups> editGroup(Groups group, List<DocumentReference> newUsers, List<DocumentReference> removeUsers, bool isPhotoChanged);
   Future<void> deleteGroups(Groups group);
   Future<List<MyUser>> getAllUsers();
@@ -18,9 +18,11 @@ abstract class ChatGroupsRepository {
   Future<MyUser> getCurrentUser();
   DocumentReference getGroupsReference(String id);
   Future<void> uploadChatImage(String path,DocumentReference senderRef, DocumentReference groupId);
-  Future<void> uploadChatDocs(String path,String filename, DocumentReference senderRef, DocumentReference groupId);
+  Future<void> uploadChatDocs(String path,String filename, DocumentReference senderRef, DocumentReference groupId, String type);
   Future<void> chatUpdateReadBy(String groupId, List<dynamic> users);
   Future<List<MyUser>> getMembersOfGroup(String groupId);
   List<DocumentReference> getUsers(List<String> groupIds);
   Future<void> storeImageLocally(dynamic image, String messageId);
+  Future<MyUser?> getUser(DocumentReference userRef);
+  Future<Groups?> getPersonalGroup(MyUser curUser, MyUser sender);
 }

@@ -65,7 +65,8 @@ class FirebaseUserRepository implements UserRepository {
       UserCredential user = await _fireBaseAuth.createUserWithEmailAndPassword(
           email: myUser.email, password: password);
       myUser = myUser.copyWith(id: user.user!.uid);
-      return myUser;
+     
+       return myUser;
     } catch (ex) {
       log(ex.toString());
       rethrow;
@@ -76,8 +77,9 @@ class FirebaseUserRepository implements UserRepository {
   Future<MyUser> getUserData([String? myUserId]) async {
     try {
       myUserId = myUserId ?? loggedInUser;
-      return await userCollection.doc(myUserId).get().then((value) =>
-          MyUser.fromEntity(MyUserEntity.fromDocument(value.data()!)));
+      return await userCollection.doc(myUserId).get().then((value) {
+          return MyUser.fromEntity(MyUserEntity.fromDocument(value.data()!));
+      });
     } catch (ex) {
       log(ex.toString());
       rethrow;

@@ -13,7 +13,7 @@ const double defaultColumnSpacingLg = 25.0;
 const double defaultColumnSpacingXXL = 35.0;
 
 const double defaultAppBarHeight = 80.0;
-const Radius bottomSheetRadius = Radius.circular(30);
+const Radius bottomSheetRadius = Radius.circular(10);
 const Radius inputBorderRadius = Radius.circular(5.0);
 BorderRadius sendButtonRadius = BorderRadius.circular(50.0);
 const Radius messageBorderRadius = Radius.elliptical(20, 40);

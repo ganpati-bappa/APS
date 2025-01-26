@@ -48,3 +48,13 @@ final class ChatGroupUpdated extends ChatState {
 final class GroupDeletionInProgress extends ChatState {}
 
 final class GroupDeleted extends ChatState {}
+
+final class DocLoadingMessages extends ChatState {
+  final String message;
+  const DocLoadingMessages({required this.message});
+
+   @override
+  List<Object> get props => [message]; 
+}
+
+final class DocLoaded extends ChatState {}

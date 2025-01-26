@@ -1,8 +1,6 @@
-import 'dart:async';
 
 import 'package:equatable/equatable.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:user_repository/user_repository.dart';
 
 class GroupsEntity extends Equatable {
 
@@ -14,6 +12,7 @@ class GroupsEntity extends Equatable {
   final String? groupPhoto;
   final Timestamp updatedTime;
   final DocumentReference? lastMessage;
+  final String? type;
   
   const GroupsEntity({
     required this.id,
@@ -23,11 +22,12 @@ class GroupsEntity extends Equatable {
     required this.updatedTime,
     required this.adminName,
     required this.lastMessage,
+    this.type,
     groupPhoto
   }) : groupPhoto = groupPhoto ?? '';
 
   @override
-  List<Object?> get props => [id, groupName, admin, users, groupPhoto];
+  List<Object?> get props => [id, groupName, admin, users, groupPhoto, type];
 
   Map<String, Object?> toDocument() {
     return {
@@ -38,7 +38,8 @@ class GroupsEntity extends Equatable {
       'groupPhoto': groupPhoto,
       'updatedTime': updatedTime,
       'adminName': adminName,
-      'lastMessage' : lastMessage
+      'lastMessage' : lastMessage,
+      'type': type,
     };
   }
 
@@ -51,7 +52,8 @@ class GroupsEntity extends Equatable {
       groupPhoto: doc['groupPhoto'] as String,
       updatedTime: doc['updatedTime'] as Timestamp,
       adminName: doc['adminName'] as String,
-      lastMessage: doc['lastMessage'] as DocumentReference?
+      lastMessage: doc['lastMessage'] as DocumentReference?,
+      type: doc['type'] as String
     );
   }
 }

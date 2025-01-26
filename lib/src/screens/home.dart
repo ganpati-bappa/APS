@@ -1,12 +1,11 @@
-import 'package:aps/blocs/groups_bloc/groups_bloc.dart';
 import 'package:aps/blocs/home_bloc/home_bloc.dart';
-import 'package:aps/src/constants/colors.dart';
 import 'package:aps/src/constants/images.dart';
 import 'package:aps/src/constants/spacings.dart';
+import 'package:aps/src/constants/styles.dart';
 import 'package:aps/src/constants/texts.dart';
 import 'package:aps/src/screens/groups.dart';
 import 'package:aps/src/screens/user_profile.dart';
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:circle_nav_bar/circle_nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -39,37 +38,35 @@ class _HomePage extends State<StatefulWidget> {
         children: pages,
       ),
       bottomNavigationBar: SafeArea(
-        maintainBottomViewPadding: true,
-        child: ClipRRect(
-          borderRadius: bottomBarRadius,
-          clipBehavior: Clip.none,
-          child: CurvedNavigationBar(
-              animationDuration: const Duration(milliseconds: 300),
-              onTap: (value) => {
-                    setState(() {
-                      index = value;
-                    })
-                  },
-              color: Colors.black,
-              backgroundColor: backgroundColor,
-              buttonBackgroundColor: Colors.black,
-              height: 50,
-              items: const [
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Icon(Icons.home_outlined, color: Colors.white),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Icon(Icons.message_outlined, color: Colors.white),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Icon(Icons.person_2_outlined, color: Colors.white),
-                ),
-              ]),
-        ),
-      ),
+          maintainBottomViewPadding: true,
+          child: CircleNavBar(
+            activeIcons: const [
+              Icon(Icons.home, color: Colors.white),
+              Icon(Icons.chat, color: Colors.white),
+              Icon(Icons.face, color: Colors.white),
+            ],
+            inactiveIcons: const [
+              Icon(Icons.home_outlined, color: Color.fromARGB(255, 254, 93, 104),),
+              Icon(Icons.chat_outlined, color: Color.fromARGB(255, 254, 93, 104)),
+              Icon(Icons.face_outlined, color: Color.fromARGB(255, 254, 93, 104)),
+            ],
+            color: const Color.fromARGB(255, 255, 200, 204),
+            circleColor: const Color.fromARGB(255, 253, 120, 129),
+            height: 55,
+            circleWidth: 50,
+            activeIndex: index,
+            onTap: (value) {
+              setState(() {
+                index = value;
+              });
+            },
+            tabDurationMillSec: 1000,
+            iconDurationMillSec: 1000,
+            padding: const EdgeInsets.only(left: 16, right: 16, bottom: 20),
+            cornerRadius: const BorderRadius.all(Radius.circular(30)),
+            shadowColor: const Color.fromARGB(255, 253, 120, 129),
+            elevation: 6,
+          )),
     );
   }
 }
@@ -80,38 +77,48 @@ Widget createCards(int index) {
     child: Row(
       children: [
         Container(
-            margin: const EdgeInsets.only(right: 20, bottom: 20),
+            margin: const EdgeInsets.only(right: 20, bottom: 10),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: cardRadius,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.16), 
+                  color: Colors.black.withOpacity(0.16),
                   blurRadius: 8,
-                  offset: const Offset(2, 4), 
+                  offset: const Offset(2, 4),
                 ),
               ],
             ),
-            width: 180,
+            width: 220,
+            height: 320,
             padding:
                 const EdgeInsets.only(top: 0, left: 10, right: 10, bottom: 10),
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    cardImages[index],
-                    width: 165,
-                    height: 150,
-                  ),
-                  Text(whyChooseUsCards[index]["heading"],
-                      maxLines: 1,
-                      overflow: TextOverflow.fade,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                      )),
-                ])),
+            child: SingleChildScrollView(
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      cardImages[index],
+                      width: 165,
+                      height: 150,
+                    ),
+                    const SizedBox(
+                      height: defaultColumnSpacingSm,
+                    ),
+                    Text(whyChooseUsCards[index]["heading"],
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: homePageKeyFeatureHeadingStyle),
+                    Padding(
+                      padding: const EdgeInsets.all(defaultColumnSpacingSm),
+                      child: Text(
+                        whyChooseUsCards[index]["text"],
+                        style: homePageKeyFeatureSubheadingStyle,
+                      ),
+                    )
+                  ]),
+            )),
         lastWidget(index),
       ],
     ),
@@ -133,95 +140,97 @@ Widget createCourseCard(int index, BuildContext context) {
     offset: const Offset(defaultPadding - 2, 0),
     child: Row(
       children: [
-        Container(
-            margin: const EdgeInsets.only(right: 20, bottom: 20),
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: cardRadius,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 8,
-                    offset: const Offset(2, 4), // Position of the shadow
-                  ),
-                ]),
-            width: MediaQuery.of(context).size.width - 50,
-            padding: const EdgeInsets.all(defaultPaddingMd),
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: defaultPaddingXs,
-                        horizontal: defaultPaddingSm),
-                    decoration: const BoxDecoration(
-                      color: Color.fromARGB(255, 234, 246, 255),
-                      borderRadius: BorderRadius.all(inputBorderRadius),
+        SingleChildScrollView(
+          child: Container(
+              margin: const EdgeInsets.only(right: 20, bottom: 20),
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: cardRadius,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 8,
+                      offset: const Offset(2, 4), // Position of the shadow
                     ),
-                    child: Text(
-                      courses[index]["duration"],
-                      style: const TextStyle(
-                          fontSize: 12,
-                          color: Color.fromARGB(255, 113, 191, 255),
-                          fontWeight: FontWeight.w800),
+                  ]),
+              width: MediaQuery.of(context).size.width - 50,
+              padding: const EdgeInsets.all(defaultPaddingMd),
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: defaultPaddingXs,
+                          horizontal: defaultPaddingSm),
+                      decoration: const BoxDecoration(
+                        color: Color.fromARGB(255, 234, 246, 255),
+                        borderRadius: BorderRadius.all(inputBorderRadius),
+                      ),
+                      child: Text(
+                        courses[index]["duration"],
+                        style: const TextStyle(
+                            fontSize: 12,
+                            color: Color.fromARGB(255, 113, 191, 255),
+                            fontWeight: FontWeight.w800),
+                      ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  Text(courses[index]["heading"],
-                      style: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.w800)),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Text(courses[index]["text"],
-                      maxLines: 4,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                      )),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  const Text(coursesPerWeek,
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black87)),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  SizedBox(
-                    height: 8,
-                    width: 300,
-                    child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: 7,
-                        itemBuilder: (context, index1) => getDaysPerWeek(
-                            context, index1, courses[index]["classes"])),
-                  ),
-                  const SizedBox(
-                    height: 18,
-                  ),
-                  const Text(userReview,
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black87)),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  LinearProgressIndicator(
-                    value: courses[index]["review"] / 100,
-                    minHeight: 6,
-                    borderRadius: elevatedButtonRadius,
-                    color: const Color.fromARGB(255, 255, 213, 158),
-                    backgroundColor: const Color.fromARGB(255, 236, 236, 236),
-                  )
-                ])),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    Text(courses[index]["heading"],
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w800)),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Text(courses[index]["text"],
+                        maxLines: 4,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                        )),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    const Text(coursesPerWeek,
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black87)),
+                    const SizedBox(
+                      height: 12,
+                    ),
+                    SizedBox(
+                      height: 8,
+                      width: 300,
+                      child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: 7,
+                          itemBuilder: (context, index1) => getDaysPerWeek(
+                              context, index1, courses[index]["classes"])),
+                    ),
+                    const SizedBox(
+                      height: 18,
+                    ),
+                    const Text(userReview,
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black87)),
+                    const SizedBox(
+                      height: 12,
+                    ),
+                    LinearProgressIndicator(
+                      value: courses[index]["review"] / 100,
+                      minHeight: 6,
+                      borderRadius: elevatedButtonRadius,
+                      color: const Color.fromARGB(255, 255, 213, 158),
+                      backgroundColor: const Color.fromARGB(255, 236, 236, 236),
+                    )
+                  ])),
+        ),
         lastWidget(index),
       ],
     ),
@@ -260,7 +269,8 @@ Widget getPagesPerIndex(int index, BuildContext context) {
       return homePage(context);
     case 1:
       return Navigator(
-        onGenerateRoute: (RouteSettings settings) => MaterialPageRoute(builder: (newContext) => AllGroups()),
+        onGenerateRoute: (RouteSettings settings) =>
+            MaterialPageRoute(builder: (newContext) => AllGroups()),
       );
     default:
       return const UserProfile();
@@ -285,17 +295,18 @@ Widget homePage(context) {
                     width: 70,
                   ),
                 ),
-                const SizedBox(width: 5,),
+                const SizedBox(
+                  width: 5,
+                ),
                 Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         homeTitle,
-                        style: Theme.of(context).textTheme.headlineLarge,
+                        style: homePageHeadingStyle,
                       ),
-                      Text(homeSubtitle,
-                          style: Theme.of(context).textTheme.labelSmall),
+                      Text(homeSubtitle, style: homePageSubheadingStyle),
                     ]),
               ],
             ),
@@ -306,18 +317,20 @@ Widget homePage(context) {
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
-                child: Text(homeSection1Title,
-                    style: Theme.of(context).textTheme.labelLarge),
+                child:
+                    Text(homeSection1Title, style: homePageSectionHeadingStyle),
               ),
-              const SizedBox(height: defaultColumnSpacingXs),
+              const SizedBox(height: defaultColumnSpacingSm),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
                 child: Text(homeSection1Subtitle,
-                    style: Theme.of(context).textTheme.headlineSmall),
+                    style: homePageSectionParagraphStyle),
               ),
-              const SizedBox(height: defaultColumnSpacingLg),
+              const SizedBox(
+                height: defaultColumnSpacingMd,
+              ),
               SizedBox(
-                height: 200,
+                height: 350,
                 width: MediaQuery.of(context).size.width,
                 child: ListView.builder(
                     scrollDirection: Axis.horizontal,
@@ -327,7 +340,8 @@ Widget homePage(context) {
             ],
           ),
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 20),
+            padding:
+                const EdgeInsets.symmetric(vertical: defaultColumnSpacingMd),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -336,14 +350,14 @@ Widget homePage(context) {
                   padding:
                       const EdgeInsets.symmetric(horizontal: defaultPadding),
                   child: Text(homeSection2Title,
-                      style: Theme.of(context).textTheme.labelLarge),
+                      style: homePageSectionHeadingStyle),
                 ),
-                const SizedBox(height: defaultColumnSpacingXs),
+                const SizedBox(height: defaultColumnSpacingMd),
                 Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: defaultPadding),
                   child: Text(homeSection2Subtitle,
-                      style: Theme.of(context).textTheme.headlineSmall),
+                      style: homePageSectionParagraphStyle),
                 ),
                 const SizedBox(height: defaultColumnSpacingLg),
                 SizedBox(

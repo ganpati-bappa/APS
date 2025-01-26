@@ -5,6 +5,7 @@ import 'package:aps/blocs/groups_bloc/groups_bloc.dart';
 import 'package:aps/src/constants/colors.dart';
 import 'package:aps/src/constants/images.dart';
 import 'package:aps/src/constants/spacings.dart';
+import 'package:aps/src/constants/styles.dart';
 import 'package:aps/src/constants/texts.dart';
 import 'package:aps/src/screens/add_users.dart';
 import 'package:aps/src/utils.dart';
@@ -16,6 +17,7 @@ import 'package:flutter_profile_picture/flutter_profile_picture.dart';
 import 'package:lottie/lottie.dart';
 import 'package:user_repository/user_repository.dart';
 
+// ignore: must_be_immutable
 class AllGroups extends StatelessWidget {
   AllGroups({super.key});
   late MyUser? currentUser;  
@@ -36,7 +38,7 @@ class AllGroups extends StatelessWidget {
                 children: [
                   const SizedBox(width: defaultColumnSpacingSm),
                   Text(groupsHeading,
-                      style: Theme.of(context).textTheme.labelLarge)
+                      style: pageHeadingStyle)
                 ],
               )),
           actions: [
@@ -199,7 +201,6 @@ Widget chatGroups(int index, Groups groups, BuildContext context, Bloc groupsBlo
     },
     child: Container(
       padding: const EdgeInsets.all(defaultPaddingXs),
-      height: 60,
       margin: const EdgeInsets.only(
           left: defaultPaddingSm,
           right: defaultPaddingSm,
@@ -223,9 +224,9 @@ Widget chatGroups(int index, Groups groups, BuildContext context, Bloc groupsBlo
                 const SizedBox(
                   height: 3,
                 ),
-                Text('Managed by: ${groups.adminName}',
+                Text(groups.type!,
                     overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.labelSmall),
+                    style: groupAdminStyles),
                 // BlocBuilder<GroupsBloc, GroupsState>(
                 //   buildWhen: (context, state) => state is LastMessageFetched,
                 //   builder: (context, state) => (lastMessages[groups.id] != null) ? Text(lastMessages[groups.id]!.message) : const SizedBox(height: 0,))
@@ -301,7 +302,7 @@ Widget getGroupDp(
   } else if (groupPhoto == null || groupPhoto.trim().isEmpty) {
     return ProfilePicture(
       fontsize: size,
-      name: groupName,
+      name: groupName.trim(),
       radius: size * 5 / 3,
     );
   } else {

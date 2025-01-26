@@ -19,7 +19,7 @@ class FirebaseChatGroupRepository extends FirebaseUserRepository implements Chat
   FirebaseChatGroupRepository();
 
   @override
-  Future<void> addGroups(Groups group) async {
+  Future<DocumentReference> addGroups(Groups group) async {
     try {
       DocumentReference groupRef = groupsCollection.doc();
       group = group.copyWith(id: groupRef.id);
@@ -30,6 +30,7 @@ class FirebaseChatGroupRepository extends FirebaseUserRepository implements Chat
       }
       await groupRef.set(group.toEntity().toDocument());
       await addGroupToUser(groupRef, group);
+      return groupRef;
     } catch (ex) {
       log(ex.toString());
       rethrow;
@@ -212,6 +213,56 @@ class FirebaseChatGroupRepository extends FirebaseUserRepository implements Chat
       rethrow;
     }
   }
+
+  @override
+  Future<MyUser?> getUser(DocumentReference<Object?> userRef) async {
+    DocumentSnapshot snapshot = await userRef.get();
+    if (snapshot.exists) {
+      return await getUserData(userRef.id);
+    } else {
+      return null;
+    }
+  }
+
+  @override
+  Future<Groups?> getPersonalGroup(MyUser curUser, MyUser sender) async {
+    try {
+      Groups? group;
+      bool isPersonalGroup = false;
+      for (DocumentReference groupRef in curUser.groups!) {
+        if (sender.groups!.contains(groupRef)) {
+          DocumentSnapshot snapshot = await groupRef.get();
+          if (snapshot.exists) {
+            group = Groups.fromEntity(GroupsEntity.fromDocument(snapshot.data() as Map<String, dynamic>));
+            if (group.type == "Personal") {
+              isPersonalGroup = true;
+              break;
+            }
+          }
+        }
+      }
+      if (!isPersonalGroup) {
+        DocumentReference curUserRef = userCollection.doc(curUser.id);
+        DocumentReference senderRef = userCollection.doc(sender.id);
+        DocumentReference groupRef = await addGroups(Groups(
+          id: "", 
+          groupName: sender.name, 
+          admin: curUserRef, 
+          users: [curUserRef, senderRef], 
+          updatedTime: Timestamp.now(), 
+          adminName: curUser.name, 
+          lastMessage: null,
+          groupPhoto: sender.picture,
+          type: "Personal"
+        ));
+        group = await groupRef.get().then((doc) => Groups.fromEntity(GroupsEntity.fromDocument(doc.data() as Map<String, dynamic>)));
+      }
+      return group;
+    } catch (ex) {
+      log(ex.toString());
+      rethrow;
+    }
+  }
   
   @override
   Future<List<MyUser>> getAllUsers() async {
@@ -299,11 +350,11 @@ class FirebaseChatGroupRepository extends FirebaseUserRepository implements Chat
   } 
 
   @override
-  Future<void> uploadChatDocs(String path,String fileName, DocumentReference<Object?> senderRef, DocumentReference<Object?> groupRef) async {
+  Future<void> uploadChatDocs(String path,String fileName, DocumentReference<Object?> senderRef, DocumentReference<Object?> groupRef, String type) async {
     try {
       String fileUrl = await uploadDocChat(path);
       final DocumentReference messageRef = messagesCollection.doc();
-      Messages messages = Messages(groupId: groupRef,url: fileUrl, message: fileName, time: Timestamp.now(), sender: userRef, messageType: "pdf", id: messageRef.id, senderName: await userRef.get().then((doc) => doc.get('name')));
+      Messages messages = Messages(groupId: groupRef,url: fileUrl, message: fileName, time: Timestamp.now(), sender: userRef, messageType: type, id: messageRef.id, senderName: await userRef.get().then((doc) => doc.get('name')));
       await messageRef.set(messages.toEntity().toDocument());
       await groupRef.update({
         'updatedTime': messages.time,

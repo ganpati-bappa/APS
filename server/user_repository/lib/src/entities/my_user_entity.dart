@@ -1,6 +1,5 @@
+// ignore: depend_on_referenced_packages
 import 'package:equatable/equatable.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import '../models/my_user.dart';
 
 class MyUserEntity extends Equatable{
   final String id;
@@ -11,6 +10,7 @@ class MyUserEntity extends Equatable{
   final List<dynamic>? groups;
   final bool? appAdmin;
   final String? pushToken;
+  final String? persona;
 
   const MyUserEntity({
       required this.id,
@@ -20,12 +20,13 @@ class MyUserEntity extends Equatable{
       required this.phoneNo,
       this.groups,
       this.appAdmin,
-      this.pushToken
+      this.pushToken,
+      this.persona
     }
   );
   
   @override
-  List<Object?> get props => [id, email, name, phoneNo, picture, groups, pushToken];
+  List<Object?> get props => [id, email, name, phoneNo, picture, groups, pushToken, persona];
 
   Map<String, Object?> toDocument() {
     return {
@@ -36,7 +37,8 @@ class MyUserEntity extends Equatable{
       'picture': picture,
       'groups': groups,
       'appAdmin': appAdmin,
-      'pushToken': pushToken
+      'pushToken': pushToken,
+      'persona': persona
     };
   }
 
@@ -49,7 +51,8 @@ class MyUserEntity extends Equatable{
       picture: doc['picture'] as String,
       groups: doc['groups'] as List<dynamic>,
       appAdmin: doc['appAdmin'] as bool,
-      pushToken: doc["pushToken"] as String
+      pushToken: doc["pushToken"] as String,
+      persona: doc["persona"] as String
     );
   }
 

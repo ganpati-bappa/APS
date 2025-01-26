@@ -8,13 +8,17 @@ const textWhite = "#FFFFFF";
 const Color backgroundColor = Color.fromRGBO(243, 243, 243, 1);
 const Color navBarColor = Color(0xff17203A);
 const Color userChatColor = Color.fromARGB(255, 22, 16, 30);
+const Color checkboxColor = Color.fromRGBO(167, 59, 197, 1);
 
 List<Color> userColors = [
   Colors.orange,
-  const Color.fromARGB(255, 120, 108, 0),
+  const Color.fromARGB(255, 219, 199, 24),
   Colors.red,
   Colors.blueAccent,
-  Colors.limeAccent
+  const Color.fromARGB(255, 186, 200, 35),
+  const Color.fromARGB(255, 68, 111, 69),
+  const Color.fromARGB(255, 79, 138, 110),
+  const Color.fromARGB(255, 91, 116, 159)
 ];
 
 List<LinearGradient> gradients = [

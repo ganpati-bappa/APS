@@ -1,10 +1,15 @@
 import 'dart:async';
 import 'dart:io';
 
+
+import 'package:aps/src/utils.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
+
 import 'package:equatable/equatable.dart';
+import 'package:open_file/open_file.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:user_repository/user_repository.dart';
 import 'dart:developer';
 import 'package:http/http.dart' as  http;
@@ -13,7 +18,7 @@ part 'chat_event.dart';
 part 'chat_state.dart';
 
 class ChatsBloc extends Bloc<ChatEvent, ChatState> {
-  final ChatGroupsRepository _chatRepository;
+  final ChatGroupsRepository chatRepository;
   final DocumentReference groupRef;
   final DocumentReference senderRef;
   StreamSubscription? _subscription;
@@ -26,7 +31,7 @@ class ChatsBloc extends Bloc<ChatEvent, ChatState> {
     required ChatGroupsRepository myChatRepository,
     required this.groupRef,
     required this.senderRef,
-  })  : _chatRepository = myChatRepository,
+  })  : chatRepository = myChatRepository,
         super(const ChatInitial()) {
 
     on<ChatLoadingRequired>((event, emit) async {
@@ -36,7 +41,7 @@ class ChatsBloc extends Bloc<ChatEvent, ChatState> {
           await _subscription!.cancel();
         }
         final CollectionReference messagesCollection =
-            _chatRepository.getMessages();
+            chatRepository.getMessages();
         _subscription = messagesCollection
             .where('groupId', isEqualTo: groupRef)
             .orderBy('time', descending: true)
@@ -73,13 +78,13 @@ class ChatsBloc extends Bloc<ChatEvent, ChatState> {
 
     on<SendMessage>((event, emit) {
       emit(SendingMessage(messages: [ Messages(groupId: groupRef, message: event.message, time: Timestamp.now(), sender: senderRef, messageType: "textLoading", id: "", senderName: ""),...messages]));
-      _chatRepository.sendMessage(event.message, senderRef, groupRef);
+      chatRepository.sendMessage(event.message, senderRef, groupRef);
     });
 
     on<SendImage>((event, emit) async {
       emit(SendingMessage(messages: [ Messages(groupId: groupRef, message: event.imagePath, time: Timestamp.now(), sender: senderRef, messageType: "imageLoading", id: "", senderName: ""),...messages]));
       try {
-        await _chatRepository.uploadChatImage(
+        await chatRepository.uploadChatImage(
             event.imagePath, senderRef, groupRef);
       } catch (ex) {
         log(ex.toString());
@@ -88,7 +93,7 @@ class ChatsBloc extends Bloc<ChatEvent, ChatState> {
     });
 
     on<UpdateMessageReadBy>((event, emit) async {
-      await _chatRepository.chatUpdateReadBy(event.messageId, event.users);
+      await chatRepository.chatUpdateReadBy(event.messageId, event.users);
     });
 
     on<LoadMoreMessageRequired>((event, emit) {
@@ -100,7 +105,7 @@ class ChatsBloc extends Bloc<ChatEvent, ChatState> {
         return;
       }
       final CollectionReference messagesCollection =
-          _chatRepository.getMessages();
+          chatRepository.getMessages();
       messagesCollection
           .where("groupId", isEqualTo: groupRef)
           .orderBy("time", descending: true)
@@ -140,9 +145,14 @@ class ChatsBloc extends Bloc<ChatEvent, ChatState> {
     });
 
     on<SendPDF>((event, emit) async {
-      emit(SendingMessage(messages: [ Messages(groupId: groupRef, message: event.fileName, time: Timestamp.now(), sender: senderRef, messageType: "pdfLoading", id: "", senderName: ""),...messages]));
+      if (event.type != "docx") {
+        emit(SendingMessage(messages: [ Messages(groupId: groupRef, message: event.fileName, time: Timestamp.now(), sender: senderRef, messageType: "pdfLoading", id: "", senderName: ""),...messages]));
+      }
+      else {
+        emit(SendingMessage(messages: [ Messages(groupId: groupRef, message: event.fileName, time: Timestamp.now(), sender: senderRef, messageType: "docxLoading", id: "", senderName: ""),...messages]));
+      }
       try {
-          await _chatRepository.uploadChatDocs(event.filePath, event.fileName, senderRef, groupRef);
+          await chatRepository.uploadChatDocs(event.filePath, event.fileName, senderRef, groupRef, event.type);
       } catch (ex) {
         log(ex.toString());
       }
@@ -151,15 +161,54 @@ class ChatsBloc extends Bloc<ChatEvent, ChatState> {
     on<StoreImageLocally>((event, emit) async {
       final response = await http.get(Uri.parse(event.filePath));
       if (response.statusCode == 200) {
-        _chatRepository.storeImageLocally(response, event.messageId);
+        chatRepository.storeImageLocally(response, event.messageId);
       }
     });
 
     on<GroupDeletionRequired>((event, emit) async {
       try {
         emit(GroupDeletionInProgress());
-        await _chatRepository.deleteGroups(event.group);
+        await chatRepository.deleteGroups(event.group);
         emit(GroupDeleted());
+      } catch (ex) {
+        log(ex.toString());
+      }
+    });
+
+    on<DocDownloadRequired>((event, emit) async{
+      try {
+        emit(const DocLoadingMessages(message: "Fetching Document"));
+        final result = await requestStoragePermission();
+        if (result) {
+          String filePath = '/storage/emulated/0/APS/';
+          if (Platform.isAndroid) {
+            Directory directory = Directory(filePath);
+            if (!directory.existsSync()) {
+              directory.createSync(recursive: true);
+            }
+          } else {
+            Directory path =
+                await getApplicationDocumentsDirectory();
+            filePath = path.path;
+          }
+          Uri url = Uri.parse(event.url);
+          filePath +=  url.queryParameters["token"]!;
+          filePath += event.name;
+          File file = File(filePath);
+          if (file.existsSync() && file.lengthSync() > 0) {
+            OpenFile.open(filePath);
+          } else {
+            emit(const DocLoadingMessages(message: "Downloading Document"));
+            await Dio().download(event.url, filePath,
+              onReceiveProgress: (value, key) {
+              });
+            OpenFile.open(filePath);
+          }
+          emit(DocLoaded());
+        } else {
+          emit(const DocLoadingMessages(message: "Storage Permission is Denied"));
+        }
+        
       } catch (ex) {
         log(ex.toString());
       }

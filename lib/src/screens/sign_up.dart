@@ -3,6 +3,7 @@ import 'package:aps/blocs/sign_up_bloc/sign_up_bloc.dart';
 import 'package:aps/src/constants/colors.dart';
 import 'package:aps/src/constants/images.dart';
 import 'package:aps/src/constants/spacings.dart';
+import 'package:aps/src/constants/styles.dart';
 import 'package:aps/src/constants/texts.dart';
 import 'package:aps/src/screens/home.dart';
 import 'package:aps/src/utils.dart';
@@ -28,9 +29,10 @@ class _SignUp extends State<StatefulWidget> {
   RegExp emailValidator =
       RegExp(r"\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$");
   RegExp passwordValidator = RegExp(
-      r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$");
+    r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&^#+=!._:;,.])[A-Za-z\d@$!%*?&^#+=!._:;,.]{8,}$");
   RegExp phoneNoValidator = RegExp(r"^\+[1-9]{1}[0-9]{3,14}$");
   late final Bloc signUpBloc;
+  int selectedPersonas = 0;
 
   int validate(String email, String phoneNo, String password) {
     if (emailController.text.isEmpty) {
@@ -59,6 +61,7 @@ class _SignUp extends State<StatefulWidget> {
 
   @override
   Widget build(BuildContext context) {
+    const List<String> Personas = ["Student", "Parent", "Teacher"];
     return BlocListener<SignUpBloc, SignUpState>(listener: (context, state) {
       if (state is SignUpSuccess) {
         Navigator.pop(context);
@@ -70,7 +73,7 @@ class _SignUp extends State<StatefulWidget> {
       } else if (state is SignUpFailure) {
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(state.message)));
+            .showSnackBar(SnackBar(content: customSnackbar(context, state.message)));
       }
     }, child: BlocBuilder<SignUpBloc, SignUpState>(builder: (context, state) {
       if (state is SignUpProcess) {
@@ -87,15 +90,19 @@ class _SignUp extends State<StatefulWidget> {
                     child: Column(children: [
                       const Image(image: AssetImage(loginPageImg)),
                       Text(signUpWelcomeTitle,
-                          style: Theme.of(context).textTheme.headlineLarge),
+                          style: signUpPageHeadingStyle,
+                          textAlign: TextAlign.center,),
                       const SizedBox(height: defaultColumnSpacingXs),
                       Text(signUpWelcomeSubtitle,
-                          style: Theme.of(context).textTheme.headlineMedium),
+                          style: homePageSubheadingStyle,
+                          textAlign: TextAlign.center,),
                       Form(
                         key: _formKey,
                         child: Padding(
                             padding: const EdgeInsets.all(defaultPaddingXs),
                             child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const SizedBox(height: defaultColumnSpacing),
                                 TextFormField(
@@ -108,7 +115,7 @@ class _SignUp extends State<StatefulWidget> {
                                         Icon(Icons.email, size: inputIconsSize),
                                     labelText: loginEmail,
                                     hintText: loginEmail,
-                                    constraints: BoxConstraints(maxHeight: 45),
+                                    // constraints: BoxConstraints(maxHeight: 45),
                                     border: OutlineInputBorder(
                                         borderRadius: BorderRadius.all(
                                             inputBorderRadius)),
@@ -122,7 +129,7 @@ class _SignUp extends State<StatefulWidget> {
                                     prefixIcon: Icon(Icons.person_2_rounded),
                                     labelText: signUpName,
                                     hintText: signUpName,
-                                    constraints: BoxConstraints(maxHeight: 45),
+                                    // constraints: BoxConstraints(maxHeight: 45),
                                     border: OutlineInputBorder(
                                         borderRadius: BorderRadius.all(
                                             inputBorderRadius)),
@@ -138,7 +145,7 @@ class _SignUp extends State<StatefulWidget> {
                                         Icon(Icons.phone_android_outlined),
                                     labelText: signUpPhoneNo,
                                     hintText: signUpPhoneNo,
-                                    constraints: BoxConstraints(maxHeight: 45),
+                                    // constraints: BoxConstraints(maxHeight: 45),
                                     border: OutlineInputBorder(
                                         borderRadius: BorderRadius.all(
                                             inputBorderRadius)),
@@ -153,8 +160,7 @@ class _SignUp extends State<StatefulWidget> {
                                       prefixIcon: const Icon(Icons.fingerprint),
                                       labelText: loginPassword,
                                       hintText: loginPassword,
-                                      constraints:
-                                          const BoxConstraints(maxHeight: 45),
+                                      // constraints: const BoxConstraints(maxHeight: 45),
                                       border: const OutlineInputBorder(
                                           borderRadius: BorderRadius.all(
                                               inputBorderRadius)),
@@ -169,6 +175,48 @@ class _SignUp extends State<StatefulWidget> {
                                                 Icons.remove_red_eye_rounded),
                                       )),
                                 ),
+                                const SizedBox(height: defaultColumnSpacingMd),
+                                Text("Register as", style: homePageSectionParagraphStyle,),
+                                const SizedBox(height: defaultColumnSpacingSm,),
+                                Column(
+                                  children: [
+                                    Row(children: [
+                                      Radio(
+                                      activeColor: checkboxColor,
+                                      value: 0,
+                                      groupValue: selectedPersonas,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          selectedPersonas = value!;
+                                        });
+                                      }),
+                                      Text(Personas[0], style: Theme.of(context).textTheme.bodyMedium, )
+                                    ],),
+                                    Row(children: [
+                                      Radio(
+                                      activeColor: Colors.blue,
+                                      value: 1,
+                                      groupValue: selectedPersonas,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          selectedPersonas = value!;
+                                        });
+                                      }),
+                                      Text(Personas[1], style: Theme.of(context).textTheme.bodyMedium,)
+                                    ],),
+                                    Row(children: [
+                                      Radio(
+                                      activeColor: checkboxColor,
+                                      value: 2,
+                                      groupValue: selectedPersonas,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          selectedPersonas = value!;
+                                        });
+                                      }),
+                                      Text(Personas[2], style: Theme.of(context).textTheme.bodyMedium,)
+                                    ],)
+                                  ],),
                                 const SizedBox(height: defaultColumnSpacingXXL),
                                 SizedBox(
                                     width: double.infinity,
@@ -191,11 +239,13 @@ class _SignUp extends State<StatefulWidget> {
                                             user = user.copyWith(
                                                 email: emailController.text,
                                                 phoneNo: phoneNoController.text,
-                                                name: nameController.text);
+                                                name: nameController.text.trim(),
+                                                persona: Personas[selectedPersonas]
+                                                );
                                             signUpBloc.add(SignUpRequired(
                                                 user: user,
-                                                password:
-                                                    passwordController.text));
+                                                password: passwordController.text,
+                                              ));
                                           }
                                         }
                                       },

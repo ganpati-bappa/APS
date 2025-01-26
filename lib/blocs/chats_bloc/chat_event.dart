@@ -66,5 +66,12 @@ class ChatGroupObjectUpdateRequired extends ChatEvent {
 class SendPDF extends ChatEvent {
   final String filePath;
   final String fileName;
-  const SendPDF({required this.filePath, required this.fileName});
+  final String type;
+  const SendPDF({required this.filePath, required this.fileName, required this.type});
+}
+
+class DocDownloadRequired extends ChatEvent {
+  final String url;
+  final String name;
+  const DocDownloadRequired({required this.url, required this.name});
 }

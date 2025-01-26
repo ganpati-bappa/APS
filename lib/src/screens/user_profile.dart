@@ -2,6 +2,7 @@ import 'package:aps/blocs/user_profile_bloc/user_profile_bloc.dart';
 import 'package:aps/src/constants/colors.dart';
 import 'package:aps/src/constants/images.dart';
 import 'package:aps/src/constants/spacings.dart';
+import 'package:aps/src/constants/styles.dart';
 import 'package:aps/src/constants/texts.dart';
 import 'package:aps/src/utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -50,7 +51,7 @@ class _UserProfile extends State<StatefulWidget> {
           title: Padding(
             padding: const EdgeInsets.all(defaultPaddingXs),
             child: Text(userProfile,
-                style: Theme.of(context).textTheme.displayLarge),
+                style: pageHeadingStyle),
           ),
         ),
         body: BlocBuilder<UserProfileBloc, UserProfileState>(
@@ -90,7 +91,7 @@ class _UserProfile extends State<StatefulWidget> {
                               },
                               child: Container(
                                 decoration: const BoxDecoration(
-                                    color: Colors.black,
+                                    color: Color.fromARGB(255, 253, 120, 129),
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(20))),
                                 child: const Padding(
@@ -208,7 +209,7 @@ class _UserProfile extends State<StatefulWidget> {
                                 "context": context,
                                 "field": signUpPhoneNo,
                                 "value": phoneNo,
-                                "type": TextInputType.number
+                                "type": TextInputType.phone
                               }, (params) {
                                 if (params["text"] != null) {
                                   if (phoneNoValidator
@@ -362,7 +363,7 @@ Widget getUserProfileDp(BuildContext context, MyUser user, double size) {
   if (user.picture == null || user.picture!.trim().isEmpty) {
     return ProfilePicture(
       fontsize: size,
-      name: user.name,
+      name: user.name.trim(),
       radius: size * 2,
     );
   } else {

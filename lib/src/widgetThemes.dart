@@ -18,7 +18,7 @@ TextTheme lightTextTheme = TextTheme(
   displayMedium: GoogleFonts.ptSerif(fontWeight: FontWeight.w400, fontSize: 16),
   headlineMedium: GoogleFonts.ptSerif(fontWeight: FontWeight.w500, fontSize: 18),
   labelLarge: GoogleFonts.ptSerif(fontWeight: FontWeight.w700, fontSize: 20),
-  labelMedium: GoogleFonts.ptSerif(fontSize: 16, fontWeight: FontWeight.w700),
+  labelMedium: GoogleFonts.ptSerif(fontSize: 16, fontWeight: FontWeight.w600),
   labelSmall: GoogleFonts.ptSerif(fontWeight: FontWeight.w400, fontSize: 14),
   bodyMedium: GoogleFonts.lato(),
   headlineLarge: GoogleFonts.ptSerif(fontWeight: FontWeight.w900, fontSize: 24),
@@ -31,7 +31,8 @@ TextTheme lightTextTheme = TextTheme(
 ElevatedButtonThemeData lightElevatedButtonData =  ElevatedButtonThemeData(
   style: ButtonStyle(
     textStyle:  WidgetStatePropertyAll(GoogleFonts.ptSerif(fontWeight: FontWeight.w500, fontSize: 15, color: Colors.white)),
-    backgroundColor: const WidgetStatePropertyAll(Color.fromARGB(255, 9, 9, 26)),
+    backgroundColor: const WidgetStatePropertyAll(Color.fromRGBO(167, 59, 197, 1)
+),
     padding: const WidgetStatePropertyAll(EdgeInsetsDirectional.symmetric(vertical: 10.0)),
     shape: WidgetStatePropertyAll(
       RoundedRectangleBorder(

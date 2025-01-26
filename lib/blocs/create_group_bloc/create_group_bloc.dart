@@ -28,7 +28,8 @@ class CreateGroupBloc extends Bloc<CreateGroupEvent, CreateGroupState> {
             updatedTime: Timestamp.now(),
             adminName: event.admin.name,
             lastMessage: null,
-            groupPhoto: event.groupPhoto
+            groupPhoto: event.groupPhoto,
+            type: "Public"
           ));
         emit(GroupSuccessfulyCreated());
       } catch (ex) {

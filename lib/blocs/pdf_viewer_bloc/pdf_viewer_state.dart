@@ -17,3 +17,7 @@ final class PdfLoaded extends PdfViewerState {
   final String localFilePath;
   const PdfLoaded({required this.localFilePath});
 }
+
+final class PDFDownloadingState extends PdfViewerState {}
+
+final class PDFDownloadedState extends PdfViewerState {}

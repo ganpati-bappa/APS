@@ -3,6 +3,7 @@ import 'package:aps/blocs/create_group_bloc/create_group_bloc.dart';
 import 'package:aps/blocs/groups_bloc/groups_bloc.dart';
 import 'package:aps/src/constants/colors.dart';
 import 'package:aps/src/constants/spacings.dart';
+import 'package:aps/src/constants/styles.dart';
 import 'package:aps/src/constants/texts.dart';
 import 'package:aps/src/screens/create_group.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +34,7 @@ class _AddUsersState extends State<AddUsers> {
           backgroundColor: backgroundColor,
           title: Text(
             addUsers,
-            style: Theme.of(context).textTheme.displayLarge,
+            style: pageHeadingStyle,
           ),
           centerTitle: false,
         ),
@@ -60,9 +61,11 @@ class _AddUsersState extends State<AddUsers> {
                             Row(
                               children: [
                                 ProfilePicture(
-                                    name: state.users[index].name,
-                                    radius: userDpRadius,
-                                    fontsize: 13),
+                                    name: state.users[index].name.trim(),
+                                    radius: 23,
+                                    fontsize: 13,
+                                    random: true,
+                                  ),
                                 const SizedBox(width: 10),
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.start,
@@ -75,7 +78,8 @@ class _AddUsersState extends State<AddUsers> {
                                     Text(state.users[index].email,
                                         style: Theme.of(context)
                                             .textTheme
-                                            .labelSmall)
+                                            .labelSmall),
+                                    Text(state.users[index].persona!, style: groupAdminStyles,)
                                   ],
                                 ),
                               ],

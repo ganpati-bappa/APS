@@ -4,6 +4,7 @@ import 'package:aps/blocs/create_group_bloc/create_group_bloc.dart';
 import 'package:aps/blocs/groups_bloc/groups_bloc.dart';
 import 'package:aps/src/constants/colors.dart';
 import 'package:aps/src/constants/spacings.dart';
+import 'package:aps/src/constants/styles.dart';
 import 'package:aps/src/constants/texts.dart';
 import 'package:aps/src/utils.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +39,7 @@ class _CreateGroup extends State<CreateGroup> {
       } else if (state is GroupCreationFailed) {
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(state.message)));
+            .showSnackBar(SnackBar(content: customSnackbar(context, state.message)));
         context.read<CreateGroupBloc>().add(ResetCreateGroupInitialState());
       }
     }, child: BlocBuilder<CreateGroupBloc, CreateGroupState>(
@@ -47,7 +48,7 @@ class _CreateGroup extends State<CreateGroup> {
         return loadingPage(
             context,
             "Group creation: 99% complete...",
-            "just waiting for that one person who always says ‘I’m here late",
+            "Just waiting for that one person who always says ‘I’m here late",
             {"loadingAnimation": groupCreationLoading});
       } else {
         return Scaffold(
@@ -55,7 +56,7 @@ class _CreateGroup extends State<CreateGroup> {
             backgroundColor: backgroundColor,
             centerTitle: false,
             title: Text(createNewGroup,
-                style: Theme.of(context).textTheme.displayLarge),
+                style: pageHeadingStyle),
           ),
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: defaultPaddingMd),
@@ -117,7 +118,7 @@ class _CreateGroup extends State<CreateGroup> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   ProfilePicture(
-                                      name: widget.users[index].name,
+                                      name: widget.users[index].name.trim(),
                                       radius: userDpRadius,
                                       fontsize: 13),
                                   const SizedBox(width: 10),

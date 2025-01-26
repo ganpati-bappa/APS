@@ -9,5 +9,10 @@ sealed class PdfViewerEvent extends Equatable {
 
 class PdfLoadingRequired extends PdfViewerEvent {
   final String url;
-  const PdfLoadingRequired({required this.url});
+  final String pdfName;
+  const PdfLoadingRequired({required this.url, required this.pdfName});
 }
+
+class PDFDownloading extends PdfViewerEvent {}
+
+class PDFDownloaded extends PdfViewerEvent {}

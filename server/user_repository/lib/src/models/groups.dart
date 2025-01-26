@@ -19,6 +19,7 @@ class Groups extends Equatable {
   final Timestamp updatedTime;
   final String? groupPhoto;
   final DocumentReference? lastMessage;
+  final String? type;
   
   const Groups({
     required this.id,
@@ -28,6 +29,7 @@ class Groups extends Equatable {
     required this.updatedTime,
     required this.adminName,
     required this.lastMessage,
+    this.type,
     groupPhoto
   }) : groupPhoto = groupPhoto ?? '';
 
@@ -39,9 +41,10 @@ class Groups extends Equatable {
     List<dynamic> ? users,
     String? groupPhoto,
     Timestamp? updatedTime,
-    DocumentReference? lastMessage
+    DocumentReference? lastMessage,
+    String? type,
   }) {
-    return Groups(id: id ?? this.id, groupName: groupName ?? this.groupName, admin: admin ?? this.admin, users: users ?? this.users, groupPhoto: groupPhoto ?? this.groupPhoto, updatedTime: updatedTime ?? this.updatedTime, adminName: adminName ?? this.adminName, lastMessage: lastMessage ?? this.lastMessage);
+    return Groups(id: id ?? this.id, groupName: groupName ?? this.groupName, admin: admin ?? this.admin, users: users ?? this.users, groupPhoto: groupPhoto ?? this.groupPhoto, updatedTime: updatedTime ?? this.updatedTime, adminName: adminName ?? this.adminName, lastMessage: lastMessage ?? this.lastMessage, type: type ?? this.type);
   }
 
   GroupsEntity toEntity() {
@@ -53,7 +56,8 @@ class Groups extends Equatable {
       groupPhoto: groupPhoto,
       updatedTime: updatedTime,
       adminName: adminName,
-      lastMessage: lastMessage
+      lastMessage: lastMessage,
+      type: type
     );
   }
 
@@ -66,7 +70,8 @@ static Groups fromEntity(GroupsEntity entity) {
       groupPhoto: entity.groupPhoto,
       updatedTime: entity.updatedTime,
       adminName: entity.adminName,
-      lastMessage: entity.lastMessage
+      lastMessage: entity.lastMessage,
+      type: entity.type,
     );
   }
 }

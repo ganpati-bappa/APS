@@ -1,6 +1,7 @@
 import 'package:aps/blocs/authentication_bloc/authentication_bloc_bloc.dart';
 import 'package:aps/blocs/sign_in_bloc/sign_in_bloc.dart';
 import 'package:aps/blocs/sign_up_bloc/sign_up_bloc.dart';
+import 'package:aps/src/constants/styles.dart';
 import 'package:aps/src/screens/sign_up.dart';
 import 'package:aps/src/utils.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +51,7 @@ class _LoginPageState extends State<StatefulWidget> {
           } else if (state is SignInFailure) {
             ScaffoldMessenger.of(context).hideCurrentSnackBar();
             ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text(state.message)));
+                .showSnackBar(SnackBar(content: customSnackbar(context, state.message)));
           }
         },
           child: BlocBuilder<SignInBloc, SignInState>(
@@ -66,10 +67,14 @@ class _LoginPageState extends State<StatefulWidget> {
                 children: [
                   const Image(image: AssetImage(loginPageImg)),
                   Text(loginPageWelcomeTitle,
-                      style: Theme.of(context).textTheme.headlineLarge),
+                      style: signUpPageHeadingStyle,
+                      textAlign: TextAlign.center,
+                      ),
                   const SizedBox(height: defaultColumnSpacingXs),
                   Text(loginPageWelcomeSubtitle,
-                      style: Theme.of(context).textTheme.headlineMedium),
+                      style: homePageSubheadingStyle,
+                      textAlign: TextAlign.center,
+                      ),
                   Form(
                     key: _formKey,
                     child: Padding(
@@ -85,7 +90,7 @@ class _LoginPageState extends State<StatefulWidget> {
                                 prefixIcon: Icon(Icons.email),
                                 labelText: loginEmail,
                                 hintText: loginEmail,
-                                constraints: BoxConstraints(maxHeight: 45),
+                                // constraints: BoxConstraints(maxHeight: 45),
                                 border: OutlineInputBorder(
                                     borderRadius:
                                         BorderRadius.all(inputBorderRadius)),
@@ -98,8 +103,7 @@ class _LoginPageState extends State<StatefulWidget> {
                               decoration: InputDecoration(
                                   prefixIcon: const Icon(Icons.fingerprint),
                                   labelText: loginPassword,
-                                  constraints:
-                                      const BoxConstraints(maxHeight: 45),
+                                  // constraints: const BoxConstraints(maxHeight: 45),
                                   hintText: loginPassword,
                                   border: const OutlineInputBorder(
                                       borderRadius:
@@ -110,7 +114,10 @@ class _LoginPageState extends State<StatefulWidget> {
                                         obscurePassword = !obscurePassword;
                                       });
                                     },
-                                    icon: const Icon(Icons.remove_red_eye_sharp),
+                                   icon: (obscurePassword)
+                                            ? const Icon(Icons.visibility_off)
+                                            : const Icon(
+                                                Icons.remove_red_eye_rounded),
                                   )),
                             ),
                             // const SizedBox(height: defaultColumnSpacingSm),

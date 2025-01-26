@@ -4,7 +4,7 @@ import '../entities/my_user_entity.dart';
 class MyUser extends Equatable {
   
   @override
-  List<Object?> get props => [id, email, name, phoneNo, picture];
+  List<Object?> get props => [id, email, name, phoneNo, picture, groups, persona];
   
   final String id;
   final String email;
@@ -14,6 +14,7 @@ class MyUser extends Equatable {
   final List<dynamic>? groups;
   final bool? appAdmin;
   final String? pushToken;
+  final String? persona;
 
   MyUser(
     {required this.id,
@@ -23,7 +24,8 @@ class MyUser extends Equatable {
       required this.phoneNo,
       List<dynamic>? groups,
       bool? appAdmin,
-      this.pushToken
+      this.pushToken,
+      this.persona
     } 
   ) : appAdmin = appAdmin ?? false, groups = groups ?? [];
 
@@ -35,7 +37,8 @@ class MyUser extends Equatable {
     phoneNo: '',
     groups: const [],
     appAdmin: false,
-    pushToken: ''
+    pushToken: '',
+    persona: 'student'
   );
 
   MyUser copyWith({
@@ -46,8 +49,9 @@ class MyUser extends Equatable {
     String? phoneNo,
     List<dynamic>? groups,
     String? pushToken,
+    String? persona
   }) {
-    return MyUser(id: id ?? this.id, email: email ?? this.email, name: name ?? this.name, picture: picture ?? this.picture, phoneNo: phoneNo ?? this.phoneNo, groups: groups ?? this.groups, pushToken: pushToken ?? this.pushToken);
+    return MyUser(id: id ?? this.id, email: email ?? this.email, name: name ?? this.name, picture: picture ?? this.picture, phoneNo: phoneNo ?? this.phoneNo, groups: groups ?? this.groups, pushToken: pushToken ?? this.pushToken, persona: persona ?? this.persona);
   }
 
   bool get isEmpty =>  this == MyUser.empty;
@@ -61,7 +65,8 @@ MyUserEntity toEntity() {
       picture: picture,
       groups: groups,
       appAdmin: appAdmin,
-      pushToken: pushToken
+      pushToken: pushToken,
+      persona: persona
     );
   }
 
@@ -74,7 +79,8 @@ static MyUser fromEntity(MyUserEntity entity) {
       picture: entity.picture,
       groups: entity.groups,
       appAdmin: entity.appAdmin,
-      pushToken: entity.pushToken
+      pushToken: entity.pushToken,
+      persona: entity.persona
     );
   }
 }

@@ -6,6 +6,7 @@ import 'package:aps/blocs/edit_group/edit_group_bloc.dart';
 import 'package:aps/src/constants/colors.dart';
 import 'package:aps/src/constants/images.dart';
 import 'package:aps/src/constants/spacings.dart';
+import 'package:aps/src/constants/styles.dart';
 import 'package:aps/src/constants/texts.dart';
 import 'package:aps/src/utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -63,7 +64,7 @@ class _EditGroupState extends State<EditGroup> {
                     backgroundColor: backgroundColor,
                     title: Text(
                       editGroupHeading,
-                      style: Theme.of(context).textTheme.displayLarge,
+                      style: pageHeadingStyle,
                     ),
                     centerTitle: false,
                   ),
@@ -110,7 +111,7 @@ class _EditGroupState extends State<EditGroup> {
                                             },
                                             child: Container(
                                               decoration: const BoxDecoration(
-                                                  color: Colors.black,
+                                                  color:  Color.fromARGB(255, 253, 120, 129),
                                                   borderRadius:
                                                       BorderRadius.all(
                                                           Radius.circular(20))),
@@ -179,7 +180,7 @@ class _EditGroupState extends State<EditGroup> {
                                                 children: [
                                                   ProfilePicture(
                                                       name: state
-                                                          .users[index].name,
+                                                          .users[index].name.trim(),
                                                       radius: userDpRadius,
                                                       fontsize: 13),
                                                   const SizedBox(width: 10),
@@ -343,7 +344,7 @@ Widget getGroupDp(
   } else if (group.groupPhoto == null || group.groupPhoto!.trim().isEmpty) {
     return ProfilePicture(
       fontsize: size,
-      name: group.groupName,
+      name: group.groupName.trim(),
       radius: size * 2,
     );
   } else {

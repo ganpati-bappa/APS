@@ -26,7 +26,7 @@ const String signWithGoogle = "Sign-in with Google";
 const String cropImage = "Crop Image";
 
 const String signUpWelcomeTitle = "Welcome";
-const String signUpWelcomeSubtitle = "Let's sign up and join the community";
+const String signUpWelcomeSubtitle = "Let's sign up and join the APS family";
 const String signUpPhoneNo = "Phone No";
 const String signUpName = "Name";
 const String signUp = "Sign Up";
@@ -60,7 +60,7 @@ const String pdfFileNameHint = "Please provide a name for the file";
 const String userProfileLoadingHeading = "Please wait";
 const String userProfileLoadingSubheading = "User Profile is loading";
 const String classroomGroupsEmptyStateHeading = "No Groups to display";
-const String classroomGroupsEmptyStateSubheading = "Please create a group or contact your adminstrator";
+const String classroomGroupsEmptyStateSubheading = "You have not been added to any groups yet";
 
 const String inputChatText = "Type your message";
 const String save = "Save";
