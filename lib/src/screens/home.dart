@@ -222,12 +222,19 @@ Widget createCourseCard(int index, BuildContext context) {
                     const SizedBox(
                       height: 12,
                     ),
-                    LinearProgressIndicator(
-                      value: courses[index]["review"] / 100,
-                      minHeight: 6,
-                      borderRadius: elevatedButtonRadius,
-                      color: const Color.fromARGB(255, 255, 213, 158),
-                      backgroundColor: const Color.fromARGB(255, 236, 236, 236),
+                    SizedBox(
+                      height: 20,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount:5,
+                        itemBuilder: (context, index2) {
+                          if (index2 < courses[index]["review"]) {
+                            return const Icon(Icons.star, color: Color.fromARGB(255, 253, 238, 97),);
+                          } else {
+                            return const Icon(Icons.star_outline, color: Colors.grey,);
+                          }
+                        },
+                      )
                     )
                   ])),
         ),
@@ -365,7 +372,7 @@ Widget homePage(context) {
                   width: MediaQuery.of(context).size.width,
                   child: ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      itemCount: 5,
+                      itemCount: 6,
                       itemBuilder: (context, index) =>
                           createCourseCard(index, context)),
                 )

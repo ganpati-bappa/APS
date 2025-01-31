@@ -64,7 +64,6 @@ class _AddUsersState extends State<AddUsers> {
                                     name: state.users[index].name.trim(),
                                     radius: 23,
                                     fontsize: 13,
-                                    random: true,
                                   ),
                                 const SizedBox(width: 10),
                                 Column(

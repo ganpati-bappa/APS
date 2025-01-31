@@ -174,6 +174,45 @@ class _UserProfile extends State<StatefulWidget> {
                         bottom: defaultPaddingSm,
                         top: defaultPaddingSm),
                     margin: const EdgeInsets.all(defaultPaddingXs),
+                     decoration: const BoxDecoration(
+                        border: Border(
+                            bottom:
+                                BorderSide(color: Colors.grey, width: 1.0))),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.account_box,
+                          size: 30,
+                          color: Color.fromARGB(255, 127, 127, 127),
+                        ),
+                        const SizedBox(
+                          width: 15,
+                        ),
+                        Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text("Persona",
+                                  style: TextStyle(
+                                      color: Colors.black54, fontSize: 12)),
+                              Text(
+                                state.user.persona!,
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.only(
+                        left: defaultPaddingSm,
+                        right: defaultPaddingSm,
+                        bottom: defaultPaddingSm,
+                        top: defaultPaddingSm),
+                    margin: const EdgeInsets.all(defaultPaddingXs),
                     decoration: const BoxDecoration(
                         border: Border(
                             bottom:
@@ -290,7 +329,7 @@ class _UserProfile extends State<StatefulWidget> {
                             },
                             child: Text(
                               signOut,
-                              style: GoogleFonts.ptSerif(
+                              style: GoogleFonts.crimsonText(
                                   color: const Color.fromARGB(255, 240, 74, 62),
                                   fontSize: 16),
                             ))

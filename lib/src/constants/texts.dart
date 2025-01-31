@@ -108,7 +108,7 @@ const List<Map<String,dynamic>> courses = [{
   "text": "This engaging and interactive beginners course is designed for children aged 3.5 to 5 years, focusing on foundational skills in Environmental Studies (EVS), Phonics, and Maths.",
   "classes": 2,
   "duration": "45-50 mins",
-  "review": 74,
+  "review": 5,
 },
 {
    "shadowColor" : Color(0xffD3E2F7),
@@ -117,7 +117,7 @@ const List<Map<String,dynamic>> courses = [{
   "text": "Our Juniors course is thoughtfully designed for children aged 5 to 6 years, focusing on building essential skills in Environmental Studies (EVS), Phonics, and Maths. ",
   "classes": 3,
   "duration": "50-55 mins",
-  "review": 83,
+  "review": 4,
 },
 {
    "shadowColor" : Color(0xffD3E2F7),
@@ -126,7 +126,7 @@ const List<Map<String,dynamic>> courses = [{
   "text": "Our comprehensive course for students in Class 1 to 5, designed for children aged 5 to 13 years, focuses on developing critical thinking and foundational skills in Science, English, and Maths.",
   "classes": 5,
   "duration": "1 hour",
-  "review": 75,
+  "review": 5,
 },
 {
    "shadowColor" : Color(0xffD3E2F7),
@@ -135,20 +135,29 @@ const List<Map<String,dynamic>> courses = [{
   "text": "Designed for students in Class 6 to 8, this course caters to learners aged 11 to 14 years, focusing on advancing their knowledge and skills in Science, English, and Maths. ",
   "classes": 5,
   "duration": "1 hour",
-  "review": 79,
+  "review": 4,
 },
 {
-   "shadowColor" : Color(0xffD3E2F7),
+  "shadowColor" : Color(0xffD3E2F7),
   "cardColor": Color.fromARGB(255, 225, 233, 245),
-  "heading": "Singing Classes: Harmonize Your Dreams",
-  "text": "Unleash your vocal potential with our Singing Classes, designed for individuals of all ages and skill levels. Whether you're a complete beginner or an experienced vocalist, our program offers a nurturing and inspiring environment to help you develop your singing skills.",
-  "classes": 2,
+  "heading": "Hindi Classes",
+  "text": "Unlock the beauty and depth of the Hindi language with our interactive online Hindi classes. Whether you're a complete beginner or looking to improve your existing skills, our courses are designed to help you learn Hindi at your own pace.",
+  "classes": 3,
   "duration": "45-50 mins",
-  "review": 91,
+  "review": 5,
+},
+{
+  "shadowColor" : Color(0xffD3E2F7),
+  "cardColor": Color.fromARGB(255, 225, 233, 245),
+  "heading": "Vedic Maths",
+  "text": "Master the art of speed and accuracy in mathematics with our Online Vedic Maths classes. Vedic Mathematics is a unique system of mathematics based on ancient Indian techniques that allows you to solve complex problems in a fraction of the time, with less effort and more fun!",
+  "classes": 3,
+  "duration": "45-50 mins",
+  "review": 5,
 },
 
 ];
 
 const String groupsHeading = "Classroom Groups";
 const String coursesPerWeek = "Classes per week";
-const String userReview = "User Reviews";
+const String userReview = "User Rating";
