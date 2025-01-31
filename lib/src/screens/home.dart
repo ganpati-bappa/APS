@@ -71,7 +71,7 @@ class _HomePage extends State<StatefulWidget> {
   }
 }
 
-Widget createCards(int index) {
+Widget createCards(int index, int size) {
   return Transform.translate(
     offset: const Offset(defaultPadding - 2, 0),
     child: Row(
@@ -119,14 +119,14 @@ Widget createCards(int index) {
                     )
                   ]),
             )),
-        lastWidget(index),
+        lastWidget((index == size)),
       ],
     ),
   );
 }
 
-Widget lastWidget(int index) {
-  if (index == 4) {
+Widget lastWidget(bool isLastWidget) {
+  if (isLastWidget) {
     return const SizedBox(width: 40);
   } else {
     return const SizedBox(
@@ -135,26 +135,27 @@ Widget lastWidget(int index) {
   }
 }
 
-Widget createCourseCard(int index, BuildContext context) {
+Widget createCourseCard(int index, BuildContext context, int size) {
   return Transform.translate(
     offset: const Offset(defaultPadding - 2, 0),
     child: Row(
       children: [
-        SingleChildScrollView(
-          child: Container(
-              margin: const EdgeInsets.only(right: 20, bottom: 20),
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: cardRadius,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 8,
-                      offset: const Offset(2, 4), // Position of the shadow
-                    ),
-                  ]),
-              width: MediaQuery.of(context).size.width - 50,
-              padding: const EdgeInsets.all(defaultPaddingMd),
+        Container(
+            margin: const EdgeInsets.only(right: 20, bottom: 20),
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: cardRadius,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 8,
+                    offset: const Offset(2, 4), // Position of the shadow
+                  ),
+                ]),
+            height: 320,
+            width: MediaQuery.of(context).size.width - 50,
+            padding: const EdgeInsets.all(defaultPaddingMd),
+            child: SingleChildScrollView(
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -236,9 +237,9 @@ Widget createCourseCard(int index, BuildContext context) {
                         },
                       )
                     )
-                  ])),
-        ),
-        lastWidget(index),
+                  ]),
+            )),
+        lastWidget(index == size),
       ],
     ),
   );
@@ -251,7 +252,7 @@ Widget getDaysPerWeek(BuildContext context, int index, int classes) {
       padding: const EdgeInsets.all(2),
       margin: const EdgeInsets.only(right: 5),
       decoration: BoxDecoration(
-          border: Border.all(color: const Color.fromARGB(255, 39, 183, 44)),
+          border: Border.all(color: const Color.fromARGB(255, 39, 52, 39)),
           borderRadius: sendButtonRadius),
       child: Container(
         decoration: BoxDecoration(
@@ -342,7 +343,7 @@ Widget homePage(context) {
                 child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: 5,
-                    itemBuilder: (context, index) => createCards(index)),
+                    itemBuilder: (context, index) => createCards(index, 4)),
               )
             ],
           ),
@@ -372,9 +373,9 @@ Widget homePage(context) {
                   width: MediaQuery.of(context).size.width,
                   child: ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      itemCount: 6,
+                      itemCount: 4,
                       itemBuilder: (context, index) =>
-                          createCourseCard(index, context)),
+                          createCourseCard(index, context, 3)),
                 )
               ],
             ),

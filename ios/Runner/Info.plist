@@ -52,6 +52,10 @@
 		<true/>
 		<key>UIStatusBarHidden</key>
 		<false/>
+		<key>NSDocumentsFolderUsageDescription</key>
+		<string>Need to download/read document shared in chat</string>
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>We need access to your photo library to save documents like PDFs or images.</string>
 		<key>UIFileSharingEnabled</key>
 		<true/>
 		<key>LSSupportsOpeningDocumentsInPlace</key>

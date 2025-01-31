@@ -61,10 +61,11 @@ Widget customSnackbar(BuildContext context, String message) {
         overflow: TextOverflow.ellipsis,
       ),
       GestureDetector(
-        child: Text("Ok", style: snackBarButton,),
-        onTap: () => {
-          ScaffoldMessenger.of(context).removeCurrentSnackBar()
-        },
+        child: Text(
+          "Ok",
+          style: snackBarButton,
+        ),
+        onTap: () => {ScaffoldMessenger.of(context).removeCurrentSnackBar()},
       )
     ],
   );
@@ -165,9 +166,8 @@ MultiBlocProvider openPage(
           group: params["groups"],
           user: params["user"]),
     );
-  } 
-  else if (pages == Pages.personalChatCreationPage) {
-     return MultiBlocProvider(
+  } else if (pages == Pages.personalChatCreationPage) {
+    return MultiBlocProvider(
       providers: [
         BlocProvider<ChatsBloc>(
             create: (context) => ChatsBloc(
@@ -181,12 +181,14 @@ MultiBlocProvider openPage(
                   context.read<GroupsBloc>().chatGroupsRepository),
         ),
         BlocProvider<PersonalChatCreationBloc>(
-          create: (context) => PersonalChatCreationBloc(chatGroupsRepository: chatGroupsRepository!),
-        )],
-        child: PersonalChatCreation(group: params!["group"], user: params["user"]),
-      );
-  }
-  else {
+          create: (context) => PersonalChatCreationBloc(
+              chatGroupsRepository: chatGroupsRepository!),
+        )
+      ],
+      child:
+          PersonalChatCreation(group: params!["group"], user: params["user"]),
+    );
+  } else {
     return MultiBlocProvider(
       providers: [
         BlocProvider<SignInBloc>(
@@ -199,7 +201,6 @@ MultiBlocProvider openPage(
     );
   }
 }
-
 
 void openBottomSheetFieldEditor(Map<String, dynamic> params, Function handler) {
   final TextEditingController controller = TextEditingController();
@@ -290,8 +291,7 @@ void openBottomSheetPDFTypePicker(BuildContext context, [Function? handler]) {
               children: [
                 Align(
                   alignment: Alignment.center,
-                  child: Text("Pick a Document type",
-                      style: pageHeadingStyle),
+                  child: Text("Pick a Document type", style: pageHeadingStyle),
                 ),
                 const SizedBox(
                   height: 30,
@@ -310,9 +310,8 @@ void openBottomSheetPDFTypePicker(BuildContext context, [Function? handler]) {
                             height: 45,
                             width: 45,
                             decoration: BoxDecoration(
-                              borderRadius: sendButtonRadius,
-                              color: Colors.blue
-                            ),
+                                borderRadius: sendButtonRadius,
+                                color: Colors.blue),
                             child: const Icon(
                               Icons.download_for_offline,
                               color: Colors.white,
@@ -323,8 +322,7 @@ void openBottomSheetPDFTypePicker(BuildContext context, [Function? handler]) {
                         const SizedBox(
                           height: 10,
                         ),
-                        Text("Offline PDF",
-                            style: bottomSheetTextStyles)
+                        Text("Offline PDF", style: bottomSheetTextStyles)
                       ],
                     ),
                     const SizedBox(
@@ -355,8 +353,7 @@ void openBottomSheetPDFTypePicker(BuildContext context, [Function? handler]) {
                         const SizedBox(
                           height: 10,
                         ),
-                        Text("PDF",
-                            style: bottomSheetTextStyles)
+                        Text("PDF", style: bottomSheetTextStyles)
                       ],
                     ),
                     const SizedBox(
@@ -387,8 +384,7 @@ void openBottomSheetPDFTypePicker(BuildContext context, [Function? handler]) {
                         const SizedBox(
                           height: 10,
                         ),
-                        Text("Docx",
-                            style: bottomSheetTextStyles)
+                        Text("Docx", style: bottomSheetTextStyles)
                       ],
                     ),
                   ],
@@ -397,7 +393,7 @@ void openBottomSheetPDFTypePicker(BuildContext context, [Function? handler]) {
             ),
           ),
         );
-    });
+      });
 }
 
 void openBottomSheetImagePicker(BuildContext context, [Function? handler]) {
@@ -416,8 +412,7 @@ void openBottomSheetImagePicker(BuildContext context, [Function? handler]) {
               children: [
                 Align(
                   alignment: Alignment.center,
-                  child: Text(photoPick,
-                      style: pageHeadingStyle),
+                  child: Text(photoPick, style: pageHeadingStyle),
                 ),
                 const SizedBox(
                   height: 30,
@@ -438,9 +433,8 @@ void openBottomSheetImagePicker(BuildContext context, [Function? handler]) {
                             height: 45,
                             width: 45,
                             decoration: BoxDecoration(
-                              borderRadius: sendButtonRadius,
-                              color: Colors.blue
-                            ),
+                                borderRadius: sendButtonRadius,
+                                color: Colors.blue),
                             child: const Icon(
                               Icons.camera_alt_outlined,
                               color: Colors.white,
@@ -451,8 +445,7 @@ void openBottomSheetImagePicker(BuildContext context, [Function? handler]) {
                         const SizedBox(
                           height: 10,
                         ),
-                        Text(camera,
-                            style: bottomSheetTextStyles)
+                        Text(camera, style: bottomSheetTextStyles)
                       ],
                     ),
                     const SizedBox(
@@ -485,8 +478,7 @@ void openBottomSheetImagePicker(BuildContext context, [Function? handler]) {
                         const SizedBox(
                           height: 10,
                         ),
-                        Text(gallery,
-                            style: bottomSheetTextStyles)
+                        Text(gallery, style: bottomSheetTextStyles)
                       ],
                     ),
                   ],
@@ -499,62 +491,82 @@ void openBottomSheetImagePicker(BuildContext context, [Function? handler]) {
 }
 
 Future<bool> requestStoragePermission() async {
-  if (await Permission.manageExternalStorage.request().isGranted) {
-    return true;
+  if (Platform.isAndroid) {
+    if (await Permission.manageExternalStorage.request().isGranted) {
+      return true;
+    } else {
+      PermissionStatus status =
+          await Permission.manageExternalStorage.request();
+      return status.isGranted;
+    }
   } else {
-    PermissionStatus status = await Permission.manageExternalStorage.request();
-    return status.isGranted;
+    if (await Permission.photos.request().isGranted) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }
 
 TextSpan _buildMessageWithLinks(String text, bool bySender) {
   final RegExp urlRegex = RegExp(r'http[s]?://\S+');
-    final List<TextSpan> textSpans = [];
-    
-    int lastIndex = 0;
-    final Iterable<Match> matches = urlRegex.allMatches(text);
-    
-    for (final match in matches) {
-      // Add any plain text before the match
-      if (lastIndex < match.start) {
-        textSpans.add(TextSpan(text: text.substring(lastIndex, match.start), style: TextStyle(
-          fontSize: 14,
-          color: (bySender) ? Colors.white70 : Colors.black87, height: 1.5),
-        ));
-      }
-      
-      // Add the matched URL as a tappable link
-      final url = match.group(0)!;
-      textSpans.add(
-        TextSpan(
-          text: url,
-          style: const TextStyle(color: Colors.blue, decoration: TextDecoration.underline, height : 1.5),
-          recognizer: TapGestureRecognizer()
-            ..onTap = () async {
-              if (await canLaunchUrl(Uri.parse(url))) {
-                await launchUrl(Uri.parse(url));
-              } else {
-                print("Could not launch $url");
-              }
-            },
-        ),
-      );
-      lastIndex = match.end;
-    }
-    
-    // Add any remaining plain text after the last match
-    if (lastIndex < text.length) {
-      textSpans.add(TextSpan(text: text.substring(lastIndex), style: TextStyle(
-          fontSize: 14,
-          color: (bySender) ? Colors.white70 : Colors.black87, height: 1.5),
+  final List<TextSpan> textSpans = [];
+
+  int lastIndex = 0;
+  final Iterable<Match> matches = urlRegex.allMatches(text);
+
+  for (final match in matches) {
+    // Add any plain text before the match
+    if (lastIndex < match.start) {
+      textSpans.add(TextSpan(
+        text: text.substring(lastIndex, match.start),
+        style: TextStyle(
+            fontSize: 14,
+            color: (bySender) ? Colors.white70 : Colors.black87,
+            height: 1.5),
       ));
     }
 
-    return TextSpan(children: textSpans);
+    // Add the matched URL as a tappable link
+    final url = match.group(0)!;
+    textSpans.add(
+      TextSpan(
+        text: url,
+        style: const TextStyle(
+            color: Colors.blue,
+            decoration: TextDecoration.underline,
+            height: 1.5),
+        recognizer: TapGestureRecognizer()
+          ..onTap = () async {
+            if (await canLaunchUrl(Uri.parse(url))) {
+              await launchUrl(Uri.parse(url));
+            } else {
+              print("Could not launch $url");
+            }
+          },
+      ),
+    );
+    lastIndex = match.end;
+  }
+
+  // Add any remaining plain text after the last match
+  if (lastIndex < text.length) {
+    textSpans.add(TextSpan(
+      text: text.substring(lastIndex),
+      style: TextStyle(
+          fontSize: 14,
+          color: (bySender) ? Colors.white70 : Colors.black87,
+          height: 1.5),
+    ));
+  }
+
+  return TextSpan(children: textSpans);
 }
 
 Color _getUserColor(String text) {
-  return userColors[(utf8.encode(text).fold(0, (prev, element) => prev + element))% userColors.length];
+  return userColors[
+      (utf8.encode(text).fold(0, (prev, element) => prev + element)) %
+          userColors.length];
 }
 
 Widget getMessageByType(BuildContext context, Messages message, bool bySender,
@@ -576,7 +588,8 @@ Widget getMessageByType(BuildContext context, Messages message, bool bySender,
           ),
         ),
       ));
-    } else if (message.messageType == "pdf" || message.messageType == "pdfOffline") {
+    } else if (message.messageType == "pdf" ||
+        message.messageType == "pdfOffline") {
       return GestureDetector(
           onTap: () {
             Navigator.push(
@@ -585,7 +598,12 @@ Widget getMessageByType(BuildContext context, Messages message, bool bySender,
                     builder: (context) => BlocProvider<PdfViewerBloc>(
                           create: (context) => PdfViewerBloc(),
                           child: PDFViewer(
-                              pdfUrl: message.url!, pdfName: message.message, offlineAvalaibility: (message.messageType == "pdf") ? false : true),
+                              pdfUrl: message.url!,
+                              pdfName: message.message,
+                              offlineAvalaibility:
+                                  (message.messageType == "pdf")
+                                      ? false
+                                      : true),
                         )));
           },
           child: Container(
@@ -689,7 +707,8 @@ Widget getMessageByType(BuildContext context, Messages message, bool bySender,
     } else if (message.messageType == "docx") {
       return GestureDetector(
           onTap: () {
-            context.read<ChatsBloc>().add(DocDownloadRequired(url: message.url!, name: message.message));
+            context.read<ChatsBloc>().add(
+                DocDownloadRequired(url: message.url!, name: message.message));
           },
           child: Container(
             decoration: const BoxDecoration(
@@ -789,8 +808,7 @@ Widget getMessageByType(BuildContext context, Messages message, bool bySender,
           ],
         ),
       );
-    }
-    else if (message.messageType == "imageLoading") {
+    } else if (message.messageType == "imageLoading") {
       return Container(
         decoration: const BoxDecoration(
             color: userChatColor,
@@ -859,7 +877,6 @@ Widget getMessageByType(BuildContext context, Messages message, bool bySender,
         ));
       }
     }
-  
   } // Message Cards by other
   else {
     if (message.messageType == "text") {
@@ -876,8 +893,7 @@ Widget getMessageByType(BuildContext context, Messages message, bool bySender,
             children: [
               Text(message.senderName,
                   style: GoogleFonts.ptSerif(
-                      color: _getUserColor(message.senderName),
-                      fontSize: 16)),
+                      color: _getUserColor(message.senderName), fontSize: 16)),
               const SizedBox(
                 height: defaultColumnSpacingXs,
               ),
@@ -888,7 +904,8 @@ Widget getMessageByType(BuildContext context, Messages message, bool bySender,
           ),
         ),
       ));
-    } else if (message.messageType == "pdf" || message.messageType == "pdfOffline") {
+    } else if (message.messageType == "pdf" ||
+        message.messageType == "pdfOffline") {
       return GestureDetector(
           onTap: () {
             Navigator.push(
@@ -897,7 +914,12 @@ Widget getMessageByType(BuildContext context, Messages message, bool bySender,
                     builder: (context) => BlocProvider<PdfViewerBloc>(
                           create: (context) => PdfViewerBloc(),
                           child: PDFViewer(
-                              pdfUrl: message.url!, pdfName: message.message, offlineAvalaibility: (message.messageType == "pdf") ? false : true),
+                              pdfUrl: message.url!,
+                              pdfName: message.message,
+                              offlineAvalaibility:
+                                  (message.messageType == "pdf")
+                                      ? false
+                                      : true),
                         )));
           },
           child: Container(
@@ -952,7 +974,8 @@ Widget getMessageByType(BuildContext context, Messages message, bool bySender,
     } else if (message.messageType == "docx") {
       return GestureDetector(
           onTap: () {
-            context.read<ChatsBloc>().add(DocDownloadRequired(url: message.url!, name: message.message));
+            context.read<ChatsBloc>().add(
+                DocDownloadRequired(url: message.url!, name: message.message));
           },
           child: Container(
             decoration: const BoxDecoration(
@@ -1003,8 +1026,7 @@ Widget getMessageByType(BuildContext context, Messages message, bool bySender,
               ],
             ),
           ));
-    } 
-    else {
+    } else {
       File imageFile = File(message.message);
       bool imageFileExists = imageFile.existsSync();
       if (imageFileExists) {
@@ -1027,8 +1049,7 @@ Widget getMessageByType(BuildContext context, Messages message, bool bySender,
                       children: [
                         Text(message.senderName,
                             style: GoogleFonts.ptSerif(
-                                color:
-                                    _getUserColor(message.senderName),
+                                color: _getUserColor(message.senderName),
                                 fontSize: 16)),
                         const SizedBox(
                           height: defaultColumnSpacingSm,
@@ -1115,7 +1136,8 @@ void openFullPageImageViewer(BuildContext context, ImageProvider image) {
               )));
 }
 
-Widget loadingPage(BuildContext context, String heading, String subHeading, [params]) {
+Widget loadingPage(BuildContext context, String heading, String subHeading,
+    [params]) {
   return Scaffold(
     body: SizedBox(
       height: MediaQuery.of(context).size.height,
@@ -1126,7 +1148,10 @@ Widget loadingPage(BuildContext context, String heading, String subHeading, [par
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            (params != null && params["loadingAnimation"] != null) ? Lottie.asset(params["loadingAnimation"], height: 200, width: 200) : Lottie.asset(loadingPageAnimation, height: 200, width: 200),
+            (params != null && params["loadingAnimation"] != null)
+                ? Lottie.asset(params["loadingAnimation"],
+                    height: 200, width: 200)
+                : Lottie.asset(loadingPageAnimation, height: 200, width: 200),
             const SizedBox(
               height: defaultColumnSpacing,
             ),

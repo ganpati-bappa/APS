@@ -269,7 +269,7 @@ class _IndividualChatGroup extends State<IndividualChatGroup> {
                                     size: 20,
                                   ))
                               : const SizedBox(),
-                          IconButton(
+                          (currentUser.persona == "Admin") ? IconButton(
                               onPressed: () {
                                 showDialog(
                                     context: context,
@@ -322,7 +322,7 @@ class _IndividualChatGroup extends State<IndividualChatGroup> {
                               icon: const Icon(
                                 Icons.delete,
                                 size: 20,
-                              ))
+                              )) : const SizedBox(),
                         ]
                       : [],
                 ),
