@@ -10,13 +10,19 @@ part 'edit_group_state.dart';
 
 class EditGroupBloc extends Bloc<EditGroupEvent, EditGroupState> {
   final ChatGroupsRepository chatGroupsRepository;
+  List<MyUser> users = [];
   EditGroupBloc({required this.chatGroupsRepository}) : super(EditGroupUserLoading()) {
     
     on<GroupUsersLoadingRequired>((event, emit) async {
       emit(EditGroupUserLoading());
       try {
-        List<MyUser> users = await chatGroupsRepository.getAllUsers();
-        emit(EditGroupUserLoaded(users: users));
+        if (users.isNotEmpty) {
+          emit(EditGroupUserLoaded(users: users));
+        } else {
+           users = await chatGroupsRepository.getAllUsers();
+          emit(EditGroupUserLoaded(users: users));
+        }
+       
       } catch (ex) {
         log(ex.toString());
         rethrow;

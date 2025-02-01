@@ -8,3 +8,11 @@ sealed class AddUserEvent extends Equatable {
 }
 
 final class UsersLoadingRequirred extends AddUserEvent {}
+
+final class UsersLoadingError extends AddUserEvent {
+  final String message;
+  const UsersLoadingError({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}

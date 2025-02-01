@@ -7,6 +7,7 @@ part 'add_user_state.dart';
 
 class AddUserBloc extends Bloc<AddUserEvent, AddUserState> {
   final ChatGroupsRepository chatGroupsRepository;
+  List<MyUser> users = [];
 
   ChatGroupsRepository get myChatGroupsRepostiory => chatGroupsRepository;
 
@@ -14,13 +15,22 @@ class AddUserBloc extends Bloc<AddUserEvent, AddUserState> {
    
     on<UsersLoadingRequirred>((event, emit) async {
       emit(UsersLoading());
-      try {
-        List<MyUser> users = await chatGroupsRepository.getAllUsers();
-        emit(AddUsersLoaded(users: users));
+      try { 
+        if (users.isNotEmpty) {
+          emit(AddUsersLoaded(users: users));
+        }
+        else {
+          users = await chatGroupsRepository.getAllUsers();
+          emit(AddUsersLoaded(users: users));
+        }
       } catch (ex) {
-        emit(UsersLoadingFailure(ex.toString()));
+        emit(UsersLoadingFailure(message: ex.toString()));
         rethrow;
       }
+    });
+
+    on<UsersLoadingError>((event, emit) {
+      emit(UsersLoadingFailure(message: event.message));
     });
   }
 }

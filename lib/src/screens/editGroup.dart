@@ -279,18 +279,29 @@ class _EditGroupState extends State<EditGroup> {
                                     EdgeInsets.symmetric(
                                         horizontal: defaultPaddingMd))),
                             onPressed: () {
+                              bool isAdminPartOfGroup = false;
+                              for (int index = 0;index < selected.length; index++) {
+                                if (selected[index]) {
+                                  isAdminPartOfGroup |= (state.users[index].persona! == "Admin");
+                                  break;
+                                }
+                              }
                               if (_textEditingController.text !=
                                       widget.group.groupName ||
                                   checkUsersChanged(
                                       selectedUsers, widget.group.users) ||
                                   group.groupPhoto != widget.group.groupPhoto &&
                                       !isGroupEditing) {
-                                isGroupEditing = true;
+                                if (isAdminPartOfGroup) {
+                                  isGroupEditing = true;
                                 editBloc.add(EditGroupsRequired(
                                     groupName: _textEditingController.text,
                                     users: selectedUsers,
                                     group: group,
                                     isGroupDpUpdated: isGroupDpUpdated));
+                                } else {
+                                  editBloc.add(const GroupEditingFailed(message: "Admin can not be removed from the group"));
+                                }
                               }
                             },
                             child: Text(

@@ -18,5 +18,5 @@ final class AddUsersLoaded extends AddUserState {
 
 final class UsersLoadingFailure extends AddUserState {
   final String message;
-  const UsersLoadingFailure(this.message);
+  const UsersLoadingFailure({required this.message});
 }
