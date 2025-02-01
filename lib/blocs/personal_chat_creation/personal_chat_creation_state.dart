@@ -11,7 +11,8 @@ final class PersonalChatCreationLoading extends PersonalChatCreationState {}
 
 final class PersonalChatCreationLoaded extends PersonalChatCreationState {
   final Map<String,List<MyUser>> users;
-  const PersonalChatCreationLoaded({required this.users});
+  final MyUser curUser;
+  const PersonalChatCreationLoaded({required this.users, required this.curUser});
 }
 
 final class PersonalChatCreationError extends PersonalChatCreationState {

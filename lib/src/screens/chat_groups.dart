@@ -545,7 +545,7 @@ class _IndividualChatGroup extends State<IndividualChatGroup> {
                                                         "Personal")
                                                     ? IconButton(
                                                         onPressed: ()  async {
-                                                            Navigator.push(
+                                                            await Navigator.push(
                                                               context,
                                                               MaterialPageRoute(
                                                                   builder: (context) => 
@@ -561,7 +561,8 @@ class _IndividualChatGroup extends State<IndividualChatGroup> {
                                                                             "user":
                                                                                 widget.user
                                                                           })));  
-
+                                                            
+                                                          
                                                         },
                                                         icon: const Icon(
                                                           Icons.chat_outlined,

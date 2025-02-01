@@ -130,7 +130,7 @@ class _PersonalChatCreationState extends State<PersonalChatCreation> {
                             scrollDirection: Axis.vertical,
                               itemCount: users.length,
                               itemBuilder: (context, index) => buildUserChatRow(
-                                  users[index], context, widget.user)),
+                                  users[index], context, state.curUser)),
                         ));
                   }
                 } else {

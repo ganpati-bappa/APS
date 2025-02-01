@@ -12,37 +12,38 @@ class PersonalChatCreationBloc extends Bloc<PersonalChatCreationEvent, PersonalC
   PersonalChatCreationBloc({required this.chatGroupsRepository}) : super(PersonalChatCreationLoading()) {
     
     on<PersonalChatFetchUsers>((event, emit) async {
+      final MyUser user = await chatGroupsRepository.getCurrentUser();
       Map<String, List<MyUser>> userPersonaMapping = {
         "Student": [],
         "Teacher": [],
         "Parent": [],
       };
-      if (event.user.persona == "Student" || event.user.persona == "Parent") {
+      if (user.persona == "Student" || user.persona == "Parent") {
         for (DocumentReference userRef in event.groups!.users) {
           final MyUser? curUser = await chatGroupsRepository.getUser(userRef);
-          if (curUser != null && curUser.persona == "Teacher" && event.user.id != curUser.id) {
+          if (curUser != null && curUser.persona == "Teacher" && user.id != curUser.id) {
             userPersonaMapping["Teacher"]!.add(curUser);
           }
-        };
-      } else if (event.user.persona == "Teacher") {
+        }
+      } else if (user.persona == "Teacher") {
         for (DocumentReference userRef in event.groups!.users) {
           final MyUser? curUser = await chatGroupsRepository.getUser(userRef);
           
-          if (curUser != null && curUser.persona == "Parent" && event.user.id != curUser.id) {
+          if (curUser != null && curUser.persona == "Parent" && user.id != curUser.id) {
             userPersonaMapping["Parent"]!.add(curUser);
-          } else if (curUser != null && curUser.persona == "Student" && event.user.id != curUser.id) {
+          } else if (curUser != null && curUser.persona == "Student" && user.id != curUser.id) {
              userPersonaMapping["Student"]!.add(curUser);
           }
-        };
+        }
       } else {
         for (DocumentReference userRef in event.groups!.users) {
           final MyUser? curUser = await chatGroupsRepository.getUser(userRef);
-          if (curUser != null && curUser.persona != "Admin" && event.user.id != curUser.id) {
+          if (curUser != null && curUser.persona != "Admin" && user.id != curUser.id) {
             userPersonaMapping[curUser.persona]!.add(curUser);
           }
         }
       }
-      emit(PersonalChatCreationLoaded(users: userPersonaMapping));
+      emit(PersonalChatCreationLoaded(users: userPersonaMapping, curUser: user));
     });
 
     on<FetchPersonalChat> ((event, emit) async {
