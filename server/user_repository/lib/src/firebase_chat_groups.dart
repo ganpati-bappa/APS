@@ -246,9 +246,10 @@ class FirebaseChatGroupRepository extends FirebaseUserRepository implements Chat
       if (!isPersonalGroup) {
         DocumentReference curUserRef = userCollection.doc(curUser.id);
         DocumentReference senderRef = userCollection.doc(sender.id);
+        String groupName = "${curUser.name.split(" ")[0]} - ${sender.name.split(" ")[0]}";
         DocumentReference groupRef = await addGroups(Groups(
           id: "", 
-          groupName: sender.name, 
+          groupName: groupName, 
           admin: curUserRef, 
           users: [curUserRef, senderRef], 
           updatedTime: Timestamp.now(), 
