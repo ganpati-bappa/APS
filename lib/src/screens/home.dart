@@ -152,7 +152,7 @@ Widget createCourseCard(int index, BuildContext context, int size) {
                     offset: const Offset(2, 4), // Position of the shadow
                   ),
                 ]),
-            height: 320,
+            height: 340,
             width: MediaQuery.of(context).size.width - 50,
             padding: const EdgeInsets.all(defaultPaddingMd),
             child: SingleChildScrollView(

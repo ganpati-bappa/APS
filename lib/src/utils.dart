@@ -60,6 +60,7 @@ Widget customSnackbar(BuildContext context, String message) {
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       ),
+      const SizedBox(width: 20,),
       GestureDetector(
         child: Text(
           "Ok",
@@ -500,11 +501,7 @@ Future<bool> requestStoragePermission() async {
       return status.isGranted;
     }
   } else {
-    if (await Permission.photos.request().isGranted) {
-      return true;
-    } else {
-      return false;
-    }
+    return true;
   }
 }
 

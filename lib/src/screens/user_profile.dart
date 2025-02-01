@@ -32,6 +32,7 @@ class _UserProfile extends State<StatefulWidget> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<UserProfileBloc, UserProfileState>(
+      listenWhen: (previous, state) => (state is UserLoggedOut || state is FieldUpdationFailed),
       listener: (context, state) {
         if (state is UserLoggedOut) {
           dynamic localRepo = (context).read<UserProfileBloc>().userRepository;
@@ -41,6 +42,12 @@ class _UserProfile extends State<StatefulWidget> {
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) =>
                   openPage(Pages.loginPage, null, localRepo, null)));
+        }
+        else if (state is FieldUpdationFailed) {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: customSnackbar(context, state.message)));
+          context.read<UserProfileBloc>().add(const UserProfileLoadingRequired());
         }
       },
       child: Scaffold(
@@ -251,14 +258,9 @@ class _UserProfile extends State<StatefulWidget> {
                                 "type": TextInputType.phone
                               }, (params) {
                                 if (params["text"] != null) {
-                                  if (phoneNoValidator
-                                      .hasMatch(params["text"])) {
-                                        setState(() {
-                                          phoneNo = params["text"];
-                                          context.read<UserProfileBloc>().add(UpdateUserProfileRequired(field: "phoneNo", value: params["text"]));
-                                          Navigator.pop(context);
-                                        });
-                                      }
+                                    phoneNo = params["text"];
+                                    context.read<UserProfileBloc>().add(UpdateUserProfileRequired(field: "phoneNo", value: phoneNo));
+                                    Navigator.pop(context);
                                 }
                               });
                             },

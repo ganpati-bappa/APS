@@ -86,10 +86,11 @@ class _CreateGroup extends State<CreateGroup> {
                     const SizedBox(height: defaultColumnSpacingLg),
                     TextField(
                       controller: _textEditingController,
+                      maxLength: 30,
                       decoration: const InputDecoration(
                         prefixIcon: Icon(Icons.keyboard),
                         hintText: createGroupInputText,
-                        constraints: BoxConstraints(maxHeight: 40),
+                        contentPadding: EdgeInsets.all(20)
                       ),
                     ),
                   ],
@@ -119,7 +120,7 @@ class _CreateGroup extends State<CreateGroup> {
                                 children: [
                                   ProfilePicture(
                                       name: widget.users[index].name.trim(),
-                                      radius: userDpRadius,
+                                      radius: 23,
                                       fontsize: 13),
                                   const SizedBox(width: 10),
                                   Column(
@@ -134,7 +135,8 @@ class _CreateGroup extends State<CreateGroup> {
                                       Text(widget.users[index].email,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .labelSmall)
+                                              .labelSmall),
+                                      Text(widget.users[index].persona!, style: groupAdminStyles,)
                                     ],
                                   ),
                                 ],

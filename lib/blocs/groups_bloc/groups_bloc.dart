@@ -26,12 +26,14 @@ class GroupsBloc extends Bloc<GroupsEvent, GroupsState> {
   GroupsBloc({required this.chatGroupsRepository, this.user}) : super(GroupsInitial()) {
 
     on<ChatGroupsLoadingRequired>((event, emit) async {
-      emit(GroupsLoading());
       try {
         if (groups.isNotEmpty) {
           emit(GroupsLoaded(groups: groups));
         }
-        currentUser ??= await chatGroupsRepository.getCurrentUser();
+        else {
+          emit(GroupsLoading());
+        }
+        currentUser = await chatGroupsRepository.getCurrentUser();
         lastMessages = {};
         groupsRef = await chatGroupsRepository.getUserGroups();
         _groupSubscription = chatGroupsRepository.getGroupsCollectionReference().orderBy("updatedTime",descending: true).snapshots().listen((snapshot) {

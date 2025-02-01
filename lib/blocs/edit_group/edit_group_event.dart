@@ -19,3 +19,11 @@ final class EditGroupsRequired extends EditGroupEvent {
   final bool isGroupDpUpdated;
   const EditGroupsRequired({required this.groupName, required this.users, required this.group, required this.isGroupDpUpdated});
 }
+
+final class GroupEditingFailed extends EditGroupEvent {
+  final String message;
+  const GroupEditingFailed({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}

@@ -24,3 +24,11 @@ final class UserImageUploaded extends UserProfileState {
   final String imagePath;
   const UserImageUploaded({required this.imagePath});
 }
+
+final class FieldUpdationFailed extends UserProfileState {
+  final String message;
+  const FieldUpdationFailed({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}

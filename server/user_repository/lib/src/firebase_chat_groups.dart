@@ -25,8 +25,10 @@ class FirebaseChatGroupRepository extends FirebaseUserRepository implements Chat
       group = group.copyWith(id: groupRef.id);
       await groupRef.set(group.toEntity().toDocument());
       if (group.groupPhoto != null && group.groupPhoto!.isNotEmpty) {
-        String imageUrl = await _uploadGroupDp(group.groupPhoto!, group.id);
-        group = group.copyWith(groupPhoto: imageUrl);
+        if (!group.groupPhoto!.contains("https://firebasestorage.googleapis.com")) {
+          String imageUrl = await _uploadGroupDp(group.groupPhoto!, group.id);
+          group = group.copyWith(groupPhoto: imageUrl);
+        }
       }
       await groupRef.set(group.toEntity().toDocument());
       await addGroupToUser(groupRef, group);

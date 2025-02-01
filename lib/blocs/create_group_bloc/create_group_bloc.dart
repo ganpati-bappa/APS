@@ -16,6 +16,8 @@ class CreateGroupBloc extends Bloc<CreateGroupEvent, CreateGroupState> {
         emit(GroupCreationInProgress());
         if (event.groupName.isEmpty) {
           throw Exception("Group Name can not be empty");
+        } else if (event.users.length < 2) {
+          throw Exception("Group should contain 2 or more users");
         }
         final List<DocumentReference> userDocumentReference = await chatGroupsRepository.getDocumentReferenceOfUsers(event.users);
         final DocumentReference currentUserReference = chatGroupsRepository.getUserReference(event.admin.id);

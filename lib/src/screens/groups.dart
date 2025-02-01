@@ -196,7 +196,8 @@ Widget chatGroups(int index, Groups groups, BuildContext context, Bloc groupsBlo
                 {"groups": groups, "user": currentUser}),
           ),
         );
-        groupsBloc.add(GetLastMessage(groupId: groups.id));
+        groupsBloc.add(ChatGroupsLoadingRequired());
+        groupsBloc.add(GetLastMessage(groupId: groups.id));        
       });
     },
     child: Container(

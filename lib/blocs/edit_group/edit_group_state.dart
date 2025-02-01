@@ -21,3 +21,11 @@ final class GroupsIsEdited extends EditGroupState {
 
 final class EditingInProgress extends EditGroupState {
 }
+
+final class GroupEditingFailedState extends EditGroupState {
+  final String message;
+  const GroupEditingFailedState({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}

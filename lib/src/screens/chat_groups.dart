@@ -10,8 +10,6 @@ import 'package:aps/src/constants/spacings.dart';
 import 'package:aps/src/constants/styles.dart';
 import 'package:aps/src/constants/texts.dart';
 import 'package:aps/src/screens/editGroup.dart';
-import 'package:aps/src/screens/groups.dart';
-import 'package:aps/src/screens/personal_chat_creation.dart';
 import 'package:aps/src/utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -20,7 +18,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:flutter_profile_picture/flutter_profile_picture.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
 import 'package:user_repository/user_repository.dart';
 import 'package:path/path.dart' as path;
@@ -56,6 +53,7 @@ class _IndividualChatGroup extends State<IndividualChatGroup> {
   bool pdfAvalaibility = false;
   Groups? localGroup;
   bool showActions = false;
+  String? groupType = "";
 
   @override
   void initState() {
@@ -66,6 +64,7 @@ class _IndividualChatGroup extends State<IndividualChatGroup> {
     groupName = widget.group.groupName;
     groupStatus = widget.groupStatus;
     currentUser = widget.user;
+    groupType = widget.group.type;
     showActions = (currentUser.id == widget.group.admin.id);
     if (currentUser.appAdmin != null) {
       showActions |= currentUser.appAdmin!;
@@ -286,10 +285,12 @@ class _IndividualChatGroup extends State<IndividualChatGroup> {
                                             left: defaultPaddingMd),
                                         title: Text(
                                           "Delete $groupName",
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
                                           style: pageHeadingStyle,
                                         ),
                                         content: Text(
-                                            "Are you sure you want to delete $groupName. As Group information can not be restored later."),
+                                            "Are you sure you want to delete $groupType Group : $groupName. As Group information can not be restored later."),
                                         actions: [
                                           TextButton(
                                               onPressed: () {
@@ -543,11 +544,11 @@ class _IndividualChatGroup extends State<IndividualChatGroup> {
                                                 (widget.group.type !=
                                                         "Personal")
                                                     ? IconButton(
-                                                        onPressed: () {
-                                                          Navigator.push(
+                                                        onPressed: ()  async {
+                                                            Navigator.push(
                                                               context,
                                                               MaterialPageRoute(
-                                                                  builder: (context) =>
+                                                                  builder: (context) => 
                                                                       openPage(
                                                                           Pages
                                                                               .personalChatCreationPage,
@@ -559,7 +560,8 @@ class _IndividualChatGroup extends State<IndividualChatGroup> {
                                                                                 localGroup,
                                                                             "user":
                                                                                 widget.user
-                                                                          })));
+                                                                          })));  
+
                                                         },
                                                         icon: const Icon(
                                                           Icons.chat_outlined,

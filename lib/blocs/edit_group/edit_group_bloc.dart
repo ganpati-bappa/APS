@@ -10,7 +10,7 @@ part 'edit_group_state.dart';
 
 class EditGroupBloc extends Bloc<EditGroupEvent, EditGroupState> {
   final ChatGroupsRepository chatGroupsRepository;
-  EditGroupBloc({required this.chatGroupsRepository}) : super(EditGroupInitial()) {
+  EditGroupBloc({required this.chatGroupsRepository}) : super(EditGroupUserLoading()) {
     
     on<GroupUsersLoadingRequired>((event, emit) async {
       emit(EditGroupUserLoading());
@@ -25,6 +25,11 @@ class EditGroupBloc extends Bloc<EditGroupEvent, EditGroupState> {
 
     on<EditGroupsRequired>((event, emit) async {
       try {
+        if (event.groupName.trim().isEmpty) {
+          throw Exception("Group Name can not be empty");
+        } else if (event.users.length <= 1) {
+          throw Exception("Group should contain 2 or more users");
+        }
         emit(EditingInProgress());
         List<DocumentReference> selectedUsersList = chatGroupsRepository.getUsers(event.users);
         Map<String, DocumentReference> selectedUsersMap = {};
@@ -54,8 +59,13 @@ class EditGroupBloc extends Bloc<EditGroupEvent, EditGroupState> {
         updatedGroup = await chatGroupsRepository.editGroup(updatedGroup, usersToAdd, usersToRemove, event.isGroupDpUpdated);
         emit(GroupsIsEdited(groups: updatedGroup));
       } catch (ex) {
+        emit(GroupEditingFailedState(message: ex.toString()));
         log(ex.toString());
       }
+    });
+
+    on<GroupEditingFailed>((event, emit) {
+      emit(GroupEditingFailedState(message: event.message));
     });
   }
 }

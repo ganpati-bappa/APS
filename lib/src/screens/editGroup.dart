@@ -45,20 +45,25 @@ class _EditGroupState extends State<EditGroup> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<EditGroupBloc, EditGroupState>(
-        listenWhen: (context, state) => (state is GroupsIsEdited),
+        listenWhen: (context, state) => (state is GroupsIsEdited || state is GroupEditingFailedState),
         listener: (context, state) {
           if (state is GroupsIsEdited) {
             isGroupEditing = false;
             Navigator.pop(context, state.groups);
-          }
+          } else if (state is GroupEditingFailedState) {
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+             ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: customSnackbar(context, state.message)));
+            }
+            editBloc.add(GroupUsersLoadingRequired(groupId: widget.group.id));
         },
         child: BlocBuilder<EditGroupBloc, EditGroupState>(
-            buildWhen: (context, state) => true,
+            buildWhen: (context, state) => state is EditingInProgress || state is EditGroupUserLoaded,
             builder: (context, state) {
               if (state is EditingInProgress) {
                 return loadingPage(
                     context, classroomGroupsLoadingHeading, editGroupLoading);
-              } else {
+              } else if (state is EditGroupUserLoaded) {
                 return Scaffold(
                   appBar: AppBar(
                     backgroundColor: backgroundColor,
@@ -131,12 +136,11 @@ class _EditGroupState extends State<EditGroup> {
                                 const SizedBox(height: defaultColumnSpacingLg),
                                 TextField(
                                   controller: _textEditingController,
+                                  maxLength: 30,
                                   decoration: const InputDecoration(
                                     prefixIcon: Icon(Icons.keyboard),
                                     hintText: createGroupInputText,
-                                    constraints: BoxConstraints(
-                                      maxHeight: 40,
-                                    ),
+                                    contentPadding: EdgeInsets.all(20)
                                   ),
                                 ),
                               ],
@@ -181,7 +185,7 @@ class _EditGroupState extends State<EditGroup> {
                                                   ProfilePicture(
                                                       name: state
                                                           .users[index].name.trim(),
-                                                      radius: userDpRadius,
+                                                      radius: 23,
                                                       fontsize: 13),
                                                   const SizedBox(width: 10),
                                                   Column(
@@ -204,7 +208,8 @@ class _EditGroupState extends State<EditGroup> {
                                                           style:
                                                               Theme.of(context)
                                                                   .textTheme
-                                                                  .labelSmall)
+                                                                  .labelSmall),
+                                                      Text(state.users[index].persona!, style: groupAdminStyles,)
                                                     ],
                                                   ),
                                                 ],
@@ -320,6 +325,9 @@ class _EditGroupState extends State<EditGroup> {
                     }),
                   ],
                 );
+              } else {
+                return loadingPage(
+                    context, classroomGroupsLoadingHeading, editGroupLoading);
               }
             }));
   }

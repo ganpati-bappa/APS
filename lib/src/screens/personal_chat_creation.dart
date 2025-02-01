@@ -40,10 +40,10 @@ class _PersonalChatCreationState extends State<PersonalChatCreation> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<PersonalChatCreationBloc, PersonalChatCreationState>(
-      listener: (context, state) {
-        if (state is PersonalChatGroupFetched) {
+      listener: (context, state)  {
+        if (state is PersonalChatGroupFetched)  {
           Navigator.pop(context);
-          Navigator.push(
+           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => openPage(

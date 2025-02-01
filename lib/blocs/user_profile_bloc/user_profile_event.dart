@@ -26,3 +26,11 @@ final class UpdateUserProfileRequired extends UserProfileEvent {
   final String value;
   const UpdateUserProfileRequired({required this.field, required this.value});
 }
+
+final class FieldUpdationFailing extends UserProfileEvent {
+  final String message;
+  const FieldUpdationFailing({required this.message});
+
+   @override
+  List<Object> get props => [message];
+}

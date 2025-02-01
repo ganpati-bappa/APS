@@ -10,7 +10,7 @@ const String login = "Sign In";
 
 const String addUserSnackBarText = "Please add one or more users to the group";
 const String createNewGroup = "Create New Group";
-const String createGroupInputText = "Please select a group name";
+const String createGroupInputText = "Please enter a new classroom group";
 const String selectGroupAdmin = "Please pick a group admin";
 const String userProfile = "User Profile";
 const String photoPick = "Pick a photo";
