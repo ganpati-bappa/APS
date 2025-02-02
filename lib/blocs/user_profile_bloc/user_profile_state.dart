@@ -32,3 +32,6 @@ final class FieldUpdationFailed extends UserProfileState {
   @override
   List<Object> get props => [message];
 }
+
+final class UserDeletionInProgress extends UserProfileState {
+}

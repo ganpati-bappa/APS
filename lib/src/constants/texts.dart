@@ -5,6 +5,7 @@ const String loginPageWelcomeSubtitle = "Make it work, make it right, make it fa
 
 const String loginEmail = "Email";
 const String loginPassword = "Password";
+const String retypePassword = "Re-Type Password";
 const String forgotPassword = "Forget Password ?";
 const String login = "Sign In";
 
@@ -31,6 +32,7 @@ const String signUpPhoneNo = "Phone No";
 const String signUpName = "Name";
 const String signUp = "Sign Up";
 const String signOut = "Sign Out";
+const String deleteUser = "Delete Account";
 const String homeTitle = "APS ";
 const String homeSubtitle = "Online Academy";
 const String homeSection1Title = "Our Key Features";
@@ -114,7 +116,7 @@ const List<Map<String,dynamic>> courses = [{
    "shadowColor" : Color(0xffD3E2F7),
   "cardColor": Color.fromARGB(255, 225, 233, 245),
   "heading": "Juniors Course",
-  "text": "Our Juniors course is thoughtfully designed for children aged 4.5 to 6 years, focusing on building essential skills. ",
+  "text": "Our Juniors course is thoughtfully and carefully designed to cater to the developmental needs of young children, specifically those aged 4.5 to 6 years. With a strong emphasis on nurturing their early cognitive, social, and emotional growth, this course aims to build essential foundational skills that will support their learning journey. ",
   "classes": 3,
   "duration": "45-60 mins",
   "review": 5,

@@ -15,4 +15,6 @@ abstract class UserRepository {
   Future<String> uploadImage(String path);
   Future<String> uploadUserProfileImage(String path);
   Future<void> updateUserProfile(String field, String value);
+  Future<void> deleteAccount(MyUser user, String password);
+  Future<void> reAuthenticateUser(String email, String password);
 }

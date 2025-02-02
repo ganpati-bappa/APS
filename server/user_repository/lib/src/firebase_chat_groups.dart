@@ -12,7 +12,7 @@ import 'package:user_repository/user_repository.dart';
 
 class FirebaseChatGroupRepository extends FirebaseUserRepository implements ChatGroupsRepository {
   final groupsCollection = FirebaseFirestore.instance.collection('groups');
-  final messagesCollection = FirebaseFirestore.instance.collection('    messages');
+  final messagesCollection = FirebaseFirestore.instance.collection('messages');
   final Reference firebaseStorage = FirebaseStorage.instance.ref();
   final batch = FirebaseFirestore.instance.batch();
 
@@ -417,6 +417,20 @@ class FirebaseChatGroupRepository extends FirebaseUserRepository implements Chat
       }
     } catch (ex) {
       log(ex.toString());      
+    }
+  }
+
+  @override
+  Future<void> deleteUserGroups(MyUser user) async {
+    try {
+      DocumentReference userRef = userCollection.doc(user.id);
+      for (DocumentReference groupRef in user.groups!) {
+        groupRef.update({
+          "users": FieldValue.arrayRemove([userRef])
+        });
+      }
+    } catch (ex) {
+      log(ex.toString());
     }
   }
 } 

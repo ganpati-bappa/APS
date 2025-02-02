@@ -10,8 +10,9 @@ part 'user_profile_state.dart';
 class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
   MyUser user;
   final UserRepository userRepository;
+  final ChatGroupsRepository chatGroupsRepository;
 
-  UserProfileBloc({required this.userRepository})
+  UserProfileBloc({required this.userRepository, required this.chatGroupsRepository})
       : user = MyUser.empty,
         super(UserProfileInitial()) {
     on<UserProfileLoadingRequired>((event, emit) async {
@@ -77,6 +78,19 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
 
     on<FieldUpdationFailing>((event,emit) {
       emit(FieldUpdationFailed(message: event.message));
+    });
+
+    on<UserProfileDeletionRequired>((event,emit) async {
+      try {
+        await userRepository.reAuthenticateUser(event.user.email, event.password);
+        emit(UserDeletionInProgress());
+        await chatGroupsRepository.deleteUserGroups(event.user);
+        await userRepository.deleteAccount(event.user, event.password);
+        emit(UserLoggedOut());
+      } catch(ex) {
+        emit(FieldUpdationFailed(message: ex.toString()));
+        log(ex.toString());
+      }
     });
   }
 }

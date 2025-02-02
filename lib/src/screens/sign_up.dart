@@ -194,7 +194,7 @@ class _SignUp extends State<StatefulWidget> {
                                     ],),
                                     Row(children: [
                                       Radio(
-                                      activeColor: Colors.blue,
+                                      activeColor: checkboxColor,
                                       value: 1,
                                       groupValue: selectedPersonas,
                                       onChanged: (value) {

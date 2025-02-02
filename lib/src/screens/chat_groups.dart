@@ -173,7 +173,9 @@ class _IndividualChatGroup extends State<IndividualChatGroup> {
   Widget build(BuildContext context) {
     return BlocListener<ChatsBloc, ChatState>(
         listenWhen: (context, state) =>
-            state is ChatGroupUpdated || state is GroupDeleted || state is DocLoadingMessages,
+            state is ChatGroupUpdated ||
+            state is GroupDeleted ||
+            state is DocLoadingMessages,
         listener: (_, state) {
           if (state is ChatGroupUpdated) {
             setState(() {
@@ -187,7 +189,8 @@ class _IndividualChatGroup extends State<IndividualChatGroup> {
             Navigator.pop(context);
           } else if (state is DocLoadingMessages) {
             ScaffoldMessenger.of(_).hideCurrentSnackBar();
-            ScaffoldMessenger.of(_).showSnackBar(SnackBar(content: customSnackbar(context, state.message)));
+            ScaffoldMessenger.of(_).showSnackBar(
+                SnackBar(content: customSnackbar(context, state.message)));
           }
         },
         child: BlocBuilder<ChatsBloc, ChatState>(builder: (context, state) {
@@ -240,7 +243,7 @@ class _IndividualChatGroup extends State<IndividualChatGroup> {
                           (widget.group.type != "Personal")
                               ? IconButton(
                                   onPressed: () async {
-                                    final Groups updatedGroup =
+                                    final Groups? updatedGroup =
                                         await Navigator.push(
                                             context,
                                             MaterialPageRoute(
@@ -252,78 +255,86 @@ class _IndividualChatGroup extends State<IndividualChatGroup> {
                                                       child: EditGroup(
                                                           group: localGroup!),
                                                     )));
-                                    setState(() {
-                                      localGroup = updatedGroup;
-                                      if (groupName != updatedGroup.groupName) {
-                                        groupName = localGroup!.groupName;
-                                      }
-                                      if (groupPhoto !=
-                                          updatedGroup.groupPhoto) {
-                                        groupPhoto = localGroup!.groupPhoto;
-                                      }
-                                    });
+                                    if (updatedGroup != null) {
+                                      setState(() {
+                                        localGroup = updatedGroup;
+                                        if (groupName !=
+                                            updatedGroup.groupName) {
+                                          groupName = localGroup!.groupName;
+                                        }
+                                        if (groupPhoto !=
+                                            updatedGroup.groupPhoto) {
+                                          groupPhoto = localGroup!.groupPhoto;
+                                        }
+                                      });
+                                    }
                                   },
                                   icon: const Icon(
                                     Icons.edit,
                                     size: 20,
                                   ))
                               : const SizedBox(),
-                          (currentUser.persona == "Admin") ? IconButton(
-                              onPressed: () {
-                                showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                        ),
-                                        backgroundColor: backgroundColor,
-                                        actionsPadding: const EdgeInsets.only(
-                                            right: defaultPaddingMd,
-                                            bottom: defaultColumnSpacingSm,
-                                            left: defaultPaddingMd),
-                                        title: Text(
-                                          "Delete $groupName",
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: pageHeadingStyle,
-                                        ),
-                                        content: Text(
-                                            "Are you sure you want to delete $groupType Group : $groupName. As Group information can not be restored later."),
-                                        actions: [
-                                          TextButton(
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                              child: const Text(
-                                                "Cancel",
-                                                style: TextStyle(
-                                                    color: Colors.grey,
-                                                    fontSize: 16),
-                                              )),
-                                          TextButton(
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                                chatsBloc.add(
-                                                    GroupDeletionRequired(
-                                                        group: localGroup!));
-                                              },
-                                              child: const Text(
-                                                "Delete",
-                                                style: TextStyle(
-                                                    fontSize: 16,
-                                                    color: Color.fromARGB(
-                                                        255, 223, 86, 76)),
-                                              ))
-                                        ],
-                                      );
-                                    });
-                              },
-                              icon: const Icon(
-                                Icons.delete,
-                                size: 20,
-                              )) : const SizedBox(),
+                          (currentUser.persona == "Admin")
+                              ? IconButton(
+                                  onPressed: () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10.0),
+                                            ),
+                                            backgroundColor: backgroundColor,
+                                            actionsPadding:
+                                                const EdgeInsets.only(
+                                                    right: defaultPaddingMd,
+                                                    bottom:
+                                                        defaultColumnSpacingSm,
+                                                    left: defaultPaddingMd),
+                                            title: Text(
+                                              "Delete $groupName",
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: pageHeadingStyle,
+                                            ),
+                                            content: Text(
+                                                "Are you sure you want to delete $groupType Group : $groupName. As Group information can not be restored later."),
+                                            actions: [
+                                              TextButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: const Text(
+                                                    "Cancel",
+                                                    style: TextStyle(
+                                                        color: Colors.grey,
+                                                        fontSize: 16),
+                                                  )),
+                                              TextButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                    chatsBloc.add(
+                                                        GroupDeletionRequired(
+                                                            group:
+                                                                localGroup!));
+                                                  },
+                                                  child: const Text(
+                                                    "Delete",
+                                                    style: TextStyle(
+                                                        fontSize: 16,
+                                                        color: Color.fromARGB(
+                                                            255, 223, 86, 76)),
+                                                  ))
+                                            ],
+                                          );
+                                        });
+                                  },
+                                  icon: const Icon(
+                                    Icons.delete,
+                                    size: 20,
+                                  ))
+                              : const SizedBox(),
                         ]
                       : [],
                 ),
@@ -544,11 +555,11 @@ class _IndividualChatGroup extends State<IndividualChatGroup> {
                                                 (widget.group.type !=
                                                         "Personal")
                                                     ? IconButton(
-                                                        onPressed: ()  async {
-                                                            await Navigator.push(
+                                                        onPressed: () async {
+                                                          await Navigator.push(
                                                               context,
                                                               MaterialPageRoute(
-                                                                  builder: (context) => 
+                                                                  builder: (context) =>
                                                                       openPage(
                                                                           Pages
                                                                               .personalChatCreationPage,
@@ -560,9 +571,7 @@ class _IndividualChatGroup extends State<IndividualChatGroup> {
                                                                                 localGroup,
                                                                             "user":
                                                                                 widget.user
-                                                                          })));  
-                                                            
-                                                          
+                                                                          })));
                                                         },
                                                         icon: const Icon(
                                                           Icons.chat_outlined,
@@ -593,18 +602,24 @@ class _IndividualChatGroup extends State<IndividualChatGroup> {
                                                             _fileExtension =
                                                                 path.extension(
                                                                     filePath!);
-                                                            if (_fileExtension != ".pdf") {
+                                                            if (_fileExtension !=
+                                                                ".pdf") {
                                                               setState(() {
-                                                                 context.read<ChatsBloc>().add(SendPDF(
-                                                                        filePath:
-                                                                            filePath,
-                                                                        fileName: result.names.single!
-                                                                            .trim(),type: params["type"]));
-                                                                            
-                                                                Navigator.pop(context);
+                                                                context.read<ChatsBloc>().add(SendPDF(
+                                                                    filePath:
+                                                                        filePath,
+                                                                    fileName: result
+                                                                        .names
+                                                                        .single!
+                                                                        .trim(),
+                                                                    type: params[
+                                                                        "type"]));
+
+                                                                Navigator.pop(
+                                                                    context);
                                                               });
                                                             }
-                                                          }     
+                                                          }
                                                         } else {
                                                           if (result != null) {
                                                             String? filePath =
@@ -631,7 +646,9 @@ class _IndividualChatGroup extends State<IndividualChatGroup> {
                                                                             filePath,
                                                                         fileName: _pdfNameController
                                                                             .text
-                                                                            .trim(),type: params["type"]));
+                                                                            .trim(),
+                                                                        type: params[
+                                                                            "type"]));
                                                                     Navigator.pop(
                                                                         context);
                                                                     Navigator.pop(

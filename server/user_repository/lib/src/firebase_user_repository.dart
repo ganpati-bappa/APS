@@ -8,14 +8,12 @@ import 'package:user_repository/user_repository.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'entities/entities.dart';
 import 'dart:developer';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:path_provider/path_provider.dart';
 
 class FirebaseUserRepository implements UserRepository {
   late final FirebaseAuth _fireBaseAuth;
   final userCollection = FirebaseFirestore.instance.collection('users');
   static final Reference firebaseStorage = FirebaseStorage.instance.ref();
-  static final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
   
   FirebaseUserRepository({FirebaseAuth? fireBaseAuth})
       : _fireBaseAuth = fireBaseAuth ?? FirebaseAuth.instance;
@@ -219,23 +217,66 @@ class FirebaseUserRepository implements UserRepository {
     }
   }
 
-  Future<void> getFirebaseMessagingToken() async {
-    await firebaseMessaging.requestPermission(
-      alert: true,
-      announcement: false,
-      badge: true,
-      carPlay: false,
-      criticalAlert: false,
-      provisional: false,
-      sound: true
-    );
+  @override
+  Future<void> deleteAccount(MyUser user, String password) async {
+    try {
+      // Deleting user's photo
+        try {
+          if (user.picture != null && user.picture!.isNotEmpty) {
+          String filePath = Uri.decodeComponent(user.picture!.split("/o/")[1].split("?")[0]);
+          Reference fileRef = firebaseStorage.child(filePath);
+          await fileRef.delete();
+          }
+        } catch (ex) {
+          log(ex.toString());
+        }
 
-    await firebaseMessaging.getToken().then((token) {
-      if (token != null) {
-        userCollection.doc(loggedInUser).update({
-          "pushToken": token
-        });
-      }
-    });
+        // Deleting user's account from database
+        try {
+          await userCollection.doc(user.id).delete();          
+        } catch (ex) {
+          log(ex.toString());
+        }
+
+        // Deleting User's Authentication
+        try { 
+          await reAuthenticateUser(user.email, password);
+          await _fireBaseAuth.currentUser?.delete();
+        } catch (ex) {
+          log(ex.toString());
+        }
+    } catch (ex) {
+      log(ex.toString());
+    }
   }
+
+  @override
+  Future<void> reAuthenticateUser(String email, String password) async {
+    try {
+      AuthCredential credential = EmailAuthProvider.credential(email: email, password: password);
+      await _fireBaseAuth.currentUser!.reauthenticateWithCredential(credential);
+    } catch(ex) {
+      throw Exception("Invalid Credential");
+    }
+  }
+
+  // Future<void> getFirebaseMessagingToken() async {
+  //   await firebaseMessaging.requestPermission(
+  //     alert: true,
+  //     announcement: false,
+  //     badge: true,
+  //     carPlay: false,
+  //     criticalAlert: false,
+  //     provisional: false,
+  //     sound: true
+  //   );
+
+  //   await firebaseMessaging.getToken().then((token) {
+  //     if (token != null) {
+  //       userCollection.doc(loggedInUser).update({
+  //         "pushToken": token
+  //       });
+  //     }
+  //   });
+  // }
 }

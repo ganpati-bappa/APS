@@ -25,4 +25,5 @@ abstract class ChatGroupsRepository {
   Future<void> storeImageLocally(dynamic image, String messageId);
   Future<MyUser?> getUser(DocumentReference userRef);
   Future<Groups?> getPersonalGroup(MyUser curUser, MyUser sender);
+  Future<void> deleteUserGroups(MyUser user);
 }

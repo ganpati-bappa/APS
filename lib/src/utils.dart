@@ -52,23 +52,29 @@ String getDateLabel(DateTime timestamp) {
 
 Widget customSnackbar(BuildContext context, String message) {
   return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    crossAxisAlignment: CrossAxisAlignment.center,
-    children: [
-      Text(
-        message,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-      ),
-      const SizedBox(width: 20,),
-      GestureDetector(
-        child: Text(
-          "Ok",
-          style: snackBarButton,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Expanded(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Text(
+              message,
+              maxLines: 1,
+              textAlign: TextAlign.start,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
         ),
-        onTap: () => {ScaffoldMessenger.of(context).removeCurrentSnackBar()},
-      )
-    ],
+        const SizedBox(width: 20,),
+        GestureDetector(
+          child: Text(
+            "Ok",
+            style: snackBarButton,
+          ),
+          onTap: () => {ScaffoldMessenger.of(context).removeCurrentSnackBar()},
+        )
+      ],
   );
 }
 
@@ -129,7 +135,7 @@ MultiBlocProvider openPage(
             create: (context) => GroupsBloc(
                 chatGroupsRepository: chatGroupsRepository!, user: user)),
         BlocProvider<UserProfileBloc>(
-          create: (context) => UserProfileBloc(userRepository: userRepository!),
+          create: (context) => UserProfileBloc(userRepository: userRepository!,chatGroupsRepository: chatGroupsRepository!),
         ),
         BlocProvider<HomeBloc>(
           create: (context) => HomeBloc(userRepository: userRepository!),

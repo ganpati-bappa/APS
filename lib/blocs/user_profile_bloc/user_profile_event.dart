@@ -34,3 +34,9 @@ final class FieldUpdationFailing extends UserProfileEvent {
    @override
   List<Object> get props => [message];
 }
+
+final class UserProfileDeletionRequired extends UserProfileEvent {
+  final MyUser user;
+  final String password;
+  const UserProfileDeletionRequired({required this.user, required this.password});
+}

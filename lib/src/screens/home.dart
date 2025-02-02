@@ -186,8 +186,6 @@ Widget createCourseCard(int index, BuildContext context, int size) {
                       height: 10,
                     ),
                     Text(courses[index]["text"],
-                        maxLines: 4,
-                        overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w400,
