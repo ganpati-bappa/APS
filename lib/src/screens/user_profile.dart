@@ -79,426 +79,428 @@ class _UserProfile extends State<StatefulWidget> {
                   if (state is UserProfileLoaded) {
                     String phoneNo = state.user.phoneNo;
                     String name = state.user.name;
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Align(
-                          alignment: Alignment.center,
-                          child: Stack(
-                            clipBehavior: Clip.none,
+                    return SingleChildScrollView(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Align(
                             alignment: Alignment.center,
-                            children: [
-                              getUserProfileDp(context, state.user, 25),
-                              Positioned(
-                                  right: -2,
-                                  bottom: -2,
-                                  child: InkWell(
-                                    onTap: () {
-                                      openBottomSheetImagePicker(context,
-                                          (params) {
-                                        if (params["image"] != null) {
+                            child: Stack(
+                              clipBehavior: Clip.none,
+                              alignment: Alignment.center,
+                              children: [
+                                getUserProfileDp(context, state.user, 25),
+                                Positioned(
+                                    right: -2,
+                                    bottom: -2,
+                                    child: InkWell(
+                                      onTap: () {
+                                        openBottomSheetImagePicker(context,
+                                            (params) {
+                                          if (params["image"] != null) {
+                                            context.read<UserProfileBloc>().add(
+                                                UploadImageRequired(
+                                                    imagePath: params["image"]
+                                                        as String));
+                                            Navigator.pop(context);
+                                          }
+                                        });
+                                      },
+                                      child: Container(
+                                        decoration: const BoxDecoration(
+                                            color: Color.fromARGB(
+                                                255, 253, 120, 129),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(20))),
+                                        child: const Padding(
+                                          padding: EdgeInsets.all(10.0),
+                                          child: Icon(
+                                            Icons.edit_outlined,
+                                            color: Colors.white,
+                                            size: 14,
+                                          ),
+                                        ),
+                                      ),
+                                    ))
+                              ],
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 40,
+                          ),
+                          Container(
+                            padding: const EdgeInsets.only(
+                                left: defaultPaddingSm,
+                                right: defaultPaddingSm,
+                                bottom: defaultPaddingSm,
+                                top: defaultPaddingSm),
+                            margin: const EdgeInsets.all(defaultPaddingXs),
+                            decoration: const BoxDecoration(
+                                border: Border(
+                                    bottom: BorderSide(
+                                        color: Colors.grey, width: 1.0))),
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.person_2_rounded,
+                                  size: 30,
+                                  color: Color.fromARGB(255, 127, 127, 127),
+                                ),
+                                const SizedBox(
+                                  width: 15,
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(signUpName,
+                                          style: TextStyle(
+                                              color: Colors.black54,
+                                              fontSize: 12)),
+                                      Text(
+                                        name,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium,
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                IconButton(
+                                    onPressed: () {
+                                      openBottomSheetFieldEditor({
+                                        "context": context,
+                                        "field": signUpName,
+                                        "value": name,
+                                        "type": TextInputType.text
+                                      }, (params) {
+                                        if (params["text"] != null) {
                                           context.read<UserProfileBloc>().add(
-                                              UploadImageRequired(
-                                                  imagePath: params["image"]
-                                                      as String));
+                                              UpdateUserProfileRequired(
+                                                  field: "name",
+                                                  value: params["text"]));
                                           Navigator.pop(context);
                                         }
                                       });
                                     },
-                                    child: Container(
-                                      decoration: const BoxDecoration(
-                                          color: Color.fromARGB(
-                                              255, 253, 120, 129),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(20))),
-                                      child: const Padding(
-                                        padding: EdgeInsets.all(10.0),
-                                        child: Icon(
-                                          Icons.edit_outlined,
-                                          color: Colors.white,
-                                          size: 14,
-                                        ),
-                                      ),
-                                    ),
-                                  ))
-                            ],
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 40,
-                        ),
-                        Container(
-                          padding: const EdgeInsets.only(
-                              left: defaultPaddingSm,
-                              right: defaultPaddingSm,
-                              bottom: defaultPaddingSm,
-                              top: defaultPaddingSm),
-                          margin: const EdgeInsets.all(defaultPaddingXs),
-                          decoration: const BoxDecoration(
-                              border: Border(
-                                  bottom: BorderSide(
-                                      color: Colors.grey, width: 1.0))),
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.person_2_rounded,
-                                size: 30,
-                                color: Color.fromARGB(255, 127, 127, 127),
-                              ),
-                              const SizedBox(
-                                width: 15,
-                              ),
-                              Expanded(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text(signUpName,
-                                        style: TextStyle(
-                                            color: Colors.black54,
-                                            fontSize: 12)),
-                                    Text(
-                                      name,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium,
-                                    )
-                                  ],
-                                ),
-                              ),
-                              IconButton(
-                                  onPressed: () {
-                                    openBottomSheetFieldEditor({
-                                      "context": context,
-                                      "field": signUpName,
-                                      "value": name,
-                                      "type": TextInputType.text
-                                    }, (params) {
-                                      if (params["text"] != null) {
-                                        context.read<UserProfileBloc>().add(
-                                            UpdateUserProfileRequired(
-                                                field: "name",
-                                                value: params["text"]));
-                                        Navigator.pop(context);
-                                      }
-                                    });
-                                  },
-                                  icon: const Icon(
-                                    Icons.edit,
-                                    size: 20,
-                                  ))
-                            ],
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.only(
-                              left: defaultPaddingSm,
-                              right: defaultPaddingSm,
-                              bottom: defaultPaddingSm,
-                              top: defaultPaddingSm),
-                          margin: const EdgeInsets.all(defaultPaddingXs),
-                          decoration: const BoxDecoration(
-                              border: Border(
-                                  bottom: BorderSide(
-                                      color: Colors.grey, width: 1.0))),
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.account_box,
-                                size: 30,
-                                color: Color.fromARGB(255, 127, 127, 127),
-                              ),
-                              const SizedBox(
-                                width: 15,
-                              ),
-                              Expanded(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text("Persona",
-                                        style: TextStyle(
-                                            color: Colors.black54,
-                                            fontSize: 12)),
-                                    Text(
-                                      state.user.persona!,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium,
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.only(
-                              left: defaultPaddingSm,
-                              right: defaultPaddingSm,
-                              bottom: defaultPaddingSm,
-                              top: defaultPaddingSm),
-                          margin: const EdgeInsets.all(defaultPaddingXs),
-                          decoration: const BoxDecoration(
-                              border: Border(
-                                  bottom: BorderSide(
-                                      color: Colors.grey, width: 1.0))),
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.phone_rounded,
-                                size: 30,
-                                color: Color.fromARGB(255, 127, 127, 127),
-                              ),
-                              const SizedBox(
-                                width: 15,
-                              ),
-                              Expanded(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text(signUpPhoneNo,
-                                        style: TextStyle(
-                                            color: Colors.black54,
-                                            fontSize: 12)),
-                                    Text(
-                                      phoneNo,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium,
-                                    )
-                                  ],
-                                ),
-                              ),
-                              IconButton(
-                                  onPressed: () {
-                                    openBottomSheetFieldEditor({
-                                      "context": context,
-                                      "field": signUpPhoneNo,
-                                      "value": phoneNo,
-                                      "type": TextInputType.phone
-                                    }, (params) {
-                                      if (params["text"] != null) {
-                                        phoneNo = params["text"];
-                                        context.read<UserProfileBloc>().add(
-                                            UpdateUserProfileRequired(
-                                                field: "phoneNo",
-                                                value: phoneNo));
-                                        Navigator.pop(context);
-                                      }
-                                    });
-                                  },
-                                  icon: const Icon(
-                                    Icons.edit,
-                                    size: 20,
-                                  ))
-                            ],
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.only(
-                              left: defaultPaddingSm,
-                              right: defaultPaddingSm,
-                              bottom: defaultPaddingSm,
-                              top: defaultPaddingSm),
-                          margin: const EdgeInsets.all(defaultPaddingXs),
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.email_rounded,
-                                size: 30,
-                                color: Color.fromARGB(255, 127, 127, 127),
-                              ),
-                              const SizedBox(
-                                width: 15,
-                              ),
-                              Expanded(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text(loginEmail,
-                                        style: TextStyle(
-                                            color: Colors.black54,
-                                            fontSize: 12)),
-                                    Text(
-                                      state.user.email,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium,
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 40,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.only(
-                                  left: defaultPaddingSm,
-                                  right: defaultPaddingSm,
-                                  bottom: defaultPaddingSm,
-                                  top: defaultPaddingSm),
-                              margin: const EdgeInsets.all(defaultPaddingXs),
-                              child: Row(
-                                children: [
-                                  const Icon(
-                                    Icons.logout,
-                                    size: 20,
-                                    color: Color.fromARGB(255, 240, 74, 62),
-                                  ),
-                                  TextButton(
-                                      onPressed: () {
-                                        context
-                                            .read<UserProfileBloc>()
-                                            .add(const SignOutRequired());
-                                      },
-                                      child: Text(
-                                        signOut,
-                                        style: GoogleFonts.crimsonText(
-                                            color: const Color.fromARGB(
-                                                255, 240, 74, 62),
-                                            fontSize: 16),
-                                      ))
-                                ],
-                              ),
+                                    icon: const Icon(
+                                      Icons.edit,
+                                      size: 20,
+                                    ))
+                              ],
                             ),
-                            Container(
-                              padding: const EdgeInsets.only(
-                                  left: defaultPaddingSm,
-                                  right: defaultPaddingSm,
-                                  bottom: defaultPaddingSm,
-                                  top: defaultPaddingSm),
-                              margin: const EdgeInsets.all(defaultPaddingXs),
-                              child: Row(
-                                children: [
-                                  const Icon(
-                                    Icons.delete_outline,
-                                    size: 20,
-                                    color: Color.fromARGB(255, 240, 74, 62),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.only(
+                                left: defaultPaddingSm,
+                                right: defaultPaddingSm,
+                                bottom: defaultPaddingSm,
+                                top: defaultPaddingSm),
+                            margin: const EdgeInsets.all(defaultPaddingXs),
+                            decoration: const BoxDecoration(
+                                border: Border(
+                                    bottom: BorderSide(
+                                        color: Colors.grey, width: 1.0))),
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.account_box,
+                                  size: 30,
+                                  color: Color.fromARGB(255, 127, 127, 127),
+                                ),
+                                const SizedBox(
+                                  width: 15,
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      const Text("Persona",
+                                          style: TextStyle(
+                                              color: Colors.black54,
+                                              fontSize: 12)),
+                                      Text(
+                                        state.user.persona!,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium,
+                                      )
+                                    ],
                                   ),
-                                  TextButton(
-                                      onPressed: () {
-                                        showDialog(
-                                            context: context,
-                                            builder: (BuildContext _) {
-                                              return AlertDialog(
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          10.0),
-                                                ),
-                                                backgroundColor:
-                                                    backgroundColor,
-                                                actionsPadding: const EdgeInsets
-                                                    .only(
-                                                    right: defaultPaddingMd,
-                                                    bottom:
-                                                        defaultColumnSpacingSm,
-                                                    left: defaultPaddingMd),
-                                                title: Text(
-                                                  "Delete ${state.user.name}'s Profile",
-                                                  maxLines: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: pageHeadingStyle,
-                                                ),
-                                                content: SizedBox(
-                                                  height: 150,
-                                                  child: SingleChildScrollView(
-                                                    child: Column(
-                                                      children: [
-                                                        const Text(
-                                                            "Are you sure you want to delete your account. As all the personal information will be wiped out and can't be retrieved later"),
-                                                        const SizedBox(height: 20,),
-                                                        TextFormField(
-                                                          controller:
-                                                              passwordController,
-                                                          obscureText:
-                                                              obscurePassword,
-                                                          decoration:
-                                                              const InputDecoration(
-                                                                  prefixIcon:
-                                                                       Icon(Icons
-                                                                          .fingerprint),
-                                                                  labelText:
-                                                                      retypePassword,
-                                                                  constraints:  BoxConstraints(maxHeight: 100),
-                                                                  hintText:
-                                                                      retypePassword,
-                                                                  border:  OutlineInputBorder(
-                                                                      borderRadius:
-                                                                          BorderRadius
-                                                                              .all(
-                                                                                  inputBorderRadius)),
-                                                                  ),
-                                                        ),
-                                                      ],
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.only(
+                                left: defaultPaddingSm,
+                                right: defaultPaddingSm,
+                                bottom: defaultPaddingSm,
+                                top: defaultPaddingSm),
+                            margin: const EdgeInsets.all(defaultPaddingXs),
+                            decoration: const BoxDecoration(
+                                border: Border(
+                                    bottom: BorderSide(
+                                        color: Colors.grey, width: 1.0))),
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.phone_rounded,
+                                  size: 30,
+                                  color: Color.fromARGB(255, 127, 127, 127),
+                                ),
+                                const SizedBox(
+                                  width: 15,
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(signUpPhoneNo,
+                                          style: TextStyle(
+                                              color: Colors.black54,
+                                              fontSize: 12)),
+                                      Text(
+                                        phoneNo,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium,
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                IconButton(
+                                    onPressed: () {
+                                      openBottomSheetFieldEditor({
+                                        "context": context,
+                                        "field": signUpPhoneNo,
+                                        "value": phoneNo,
+                                        "type": TextInputType.phone
+                                      }, (params) {
+                                        if (params["text"] != null) {
+                                          phoneNo = params["text"];
+                                          context.read<UserProfileBloc>().add(
+                                              UpdateUserProfileRequired(
+                                                  field: "phoneNo",
+                                                  value: phoneNo));
+                                          Navigator.pop(context);
+                                        }
+                                      });
+                                    },
+                                    icon: const Icon(
+                                      Icons.edit,
+                                      size: 20,
+                                    ))
+                              ],
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.only(
+                                left: defaultPaddingSm,
+                                right: defaultPaddingSm,
+                                bottom: defaultPaddingSm,
+                                top: defaultPaddingSm),
+                            margin: const EdgeInsets.all(defaultPaddingXs),
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.email_rounded,
+                                  size: 30,
+                                  color: Color.fromARGB(255, 127, 127, 127),
+                                ),
+                                const SizedBox(
+                                  width: 15,
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(loginEmail,
+                                          style: TextStyle(
+                                              color: Colors.black54,
+                                              fontSize: 12)),
+                                      Text(
+                                        state.user.email,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium,
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 40,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.only(
+                                    left: defaultPaddingSm,
+                                    right: defaultPaddingSm,
+                                    bottom: defaultPaddingSm,
+                                    top: defaultPaddingSm),
+                                margin: const EdgeInsets.all(defaultPaddingXs),
+                                child: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.logout,
+                                      size: 20,
+                                      color: Color.fromARGB(255, 240, 74, 62),
+                                    ),
+                                    TextButton(
+                                        onPressed: () {
+                                          context
+                                              .read<UserProfileBloc>()
+                                              .add(const SignOutRequired());
+                                        },
+                                        child: Text(
+                                          signOut,
+                                          textAlign: TextAlign.left,
+                                          style: GoogleFonts.crimsonText(
+                                              color: const Color.fromARGB(
+                                                  255, 240, 74, 62),
+                                              fontSize: 16),
+                                        ))
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.only(
+                                    left: defaultPaddingSm,
+                                    right: defaultPaddingSm,
+                                    bottom: defaultPaddingSm,
+                                    top: defaultPaddingSm),
+                                margin: const EdgeInsets.all(defaultPaddingXs),
+                                child: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.delete_outline,
+                                      size: 20,
+                                      color: Color.fromARGB(255, 240, 74, 62),
+                                    ),
+                                    TextButton(
+                                        onPressed: () {
+                                          showDialog(
+                                              context: context,
+                                              builder: (BuildContext _) {
+                                                return AlertDialog(
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10.0),
+                                                  ),
+                                                  backgroundColor:
+                                                      backgroundColor,
+                                                  actionsPadding: const EdgeInsets
+                                                      .only(
+                                                      right: defaultPaddingMd,
+                                                      bottom:
+                                                          defaultColumnSpacingSm,
+                                                      left: defaultPaddingMd),
+                                                  title: Text(
+                                                    "Delete ${state.user.name}'s Profile",
+                                                    maxLines: 1,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: pageHeadingStyle,
+                                                  ),
+                                                  content: SizedBox(
+                                                    height: 150,
+                                                    child: SingleChildScrollView(
+                                                      child: Column(
+                                                        children: [
+                                                          const Text(
+                                                              "Are you sure you want to delete your account. As all the personal information will be wiped out and can't be retrieved later"),
+                                                          const SizedBox(height: 20,),
+                                                          TextFormField(
+                                                            controller:
+                                                                passwordController,
+                                                            obscureText:
+                                                                obscurePassword,
+                                                            decoration:
+                                                                const InputDecoration(
+                                                                    prefixIcon:
+                                                                         Icon(Icons
+                                                                            .fingerprint),
+                                                                    labelText:
+                                                                        retypePassword,
+                                                                    constraints:  BoxConstraints(maxHeight: 100),
+                                                                    hintText:
+                                                                        retypePassword,
+                                                                    border:  OutlineInputBorder(
+                                                                        borderRadius:
+                                                                            BorderRadius
+                                                                                .all(
+                                                                                    inputBorderRadius)),
+                                                                    ),
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ),
                                                   ),
-                                                ),
-                                                actions: [
-                                                  TextButton(
-                                                      onPressed: () {
-                                                        Navigator.pop(_);
-                                                      },
-                                                      child: const Text(
-                                                        "Cancel",
-                                                        style: TextStyle(
-                                                            color: Colors.grey,
-                                                            fontSize: 16),
-                                                      )),
-                                                  TextButton(
-                                                      onPressed: () {
-                                                        Navigator.pop(_);
-                                                        context
-                                                            .read<
-                                                                UserProfileBloc>()
-                                                            .add(
-                                                                UserProfileDeletionRequired(
-                                                                    user: state
-                                                                        .user, password: passwordController.text));
-                                                      },
-                                                      child: const Text(
-                                                        "Delete",
-                                                        style: TextStyle(
-                                                            fontSize: 16,
-                                                            color:
-                                                                Color.fromARGB(
-                                                                    255,
-                                                                    223,
-                                                                    86,
-                                                                    76)),
-                                                      ))
-                                                ],
-                                              );
-                                            });
-                                      },
-                                      child: Text(
-                                        deleteUser,
-                                        style: GoogleFonts.crimsonText(
-                                            color: const Color.fromARGB(
-                                                255, 240, 74, 62),
-                                            fontSize: 16),
-                                      ))
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                      ],
+                                                  actions: [
+                                                    TextButton(
+                                                        onPressed: () {
+                                                          Navigator.pop(_);
+                                                        },
+                                                        child: const Text(
+                                                          "Cancel",
+                                                          style: TextStyle(
+                                                              color: Colors.grey,
+                                                              fontSize: 16),
+                                                        )),
+                                                    TextButton(
+                                                        onPressed: () {
+                                                          Navigator.pop(_);
+                                                          context
+                                                              .read<
+                                                                  UserProfileBloc>()
+                                                              .add(
+                                                                  UserProfileDeletionRequired(
+                                                                      user: state
+                                                                          .user, password: passwordController.text));
+                                                        },
+                                                        child: const Text(
+                                                          "Delete",
+                                                          style: TextStyle(
+                                                              fontSize: 16,
+                                                              color:
+                                                                  Color.fromARGB(
+                                                                      255,
+                                                                      223,
+                                                                      86,
+                                                                      76)),
+                                                        ))
+                                                  ],
+                                                );
+                                              });
+                                        },
+                                        child: Text(
+                                          deleteUser,
+                                          style: GoogleFonts.crimsonText(
+                                              color: const Color.fromARGB(
+                                                  255, 240, 74, 62),
+                                              fontSize: 16),
+                                        ))
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
                     );
                   } else if (state is UserProfileLoading) {
                     return Center(

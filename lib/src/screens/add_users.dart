@@ -63,47 +63,54 @@ class _AddUsersState extends State<AddUsers> {
                     itemCount: state.users.length,
                     itemBuilder: (context, index) {
                       return Container(
-                          padding: const EdgeInsets.all(defaultColumnSpacingSm),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Row(
-                                children: [
-                                  ProfilePicture(
-                                      name: state.users[index].name.trim(),
-                                      radius: 23,
-                                      fontsize: 13,
+                        padding: const EdgeInsets.all(defaultColumnSpacingSm),
+                        child: Row(  
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width - 100,
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  children: [
+                                    ProfilePicture(
+                                        name: state.users[index].name.trim(),
+                                        radius: 23,
+                                        fontsize: 13,
+                                      ),
+                                    const SizedBox(width: 10),
+                                    Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(state.users[index].name,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .labelMedium),
+                                        Text(state.users[index].email,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .labelSmall),
+                                        Text(state.users[index].persona!, style: groupAdminStyles,)
+                                      ],
                                     ),
-                                  const SizedBox(width: 10),
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(state.users[index].name,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .labelMedium),
-                                      Text(state.users[index].email,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .labelSmall),
-                                      Text(state.users[index].persona!, style: groupAdminStyles,)
-                                    ],
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
-                              Checkbox(
-                                  checkColor: Colors.white,
-                                  activeColor: Colors.black,
-                                  value: selected[index],
-                                  onChanged: (bool? value) {
-                                    setState(() {
-                                      selected[index] = !selected[index];
-                                    });
-                                  }),
-                            ],
-                          ));
+                            ),
+                            Checkbox(
+                                checkColor: Colors.white,
+                                activeColor: Colors.black,
+                                value: selected[index],
+                                onChanged: (bool? value) {
+                                  setState(() {
+                                    selected[index] = !selected[index];
+                                  });
+                                }),
+                          ],
+                        ),
+                      );
                     }),
               );
             } else {

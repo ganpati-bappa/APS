@@ -5,6 +5,7 @@ import 'package:aps/src/constants/styles.dart';
 import 'package:aps/src/constants/texts.dart';
 import 'package:aps/src/screens/groups.dart';
 import 'package:aps/src/screens/user_profile.dart';
+import 'package:aps/src/utils.dart';
 import 'package:circle_nav_bar/circle_nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -283,103 +284,3 @@ Widget getPagesPerIndex(int index, BuildContext context) {
   }
 }
 
-Widget homePage(context) {
-  return SafeArea(
-    child: SingleChildScrollView(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(defaultPadding),
-            child: Row(
-              children: [
-                ClipOval(
-                  child: Image.asset(
-                    logo,
-                    height: 70,
-                    width: 70,
-                  ),
-                ),
-                const SizedBox(
-                  width: 5,
-                ),
-                Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        homeTitle,
-                        style: homePageHeadingStyle,
-                      ),
-                      Text(homeSubtitle, style: homePageSubheadingStyle),
-                    ]),
-              ],
-            ),
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
-                child:
-                    Text(homeSection1Title, style: homePageSectionHeadingStyle),
-              ),
-              const SizedBox(height: defaultColumnSpacingSm),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
-                child: Text(homeSection1Subtitle,
-                    style: homePageSectionParagraphStyle),
-              ),
-              const SizedBox(
-                height: defaultColumnSpacingMd,
-              ),
-              SizedBox(
-                height: 350,
-                width: MediaQuery.of(context).size.width,
-                child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: 5,
-                    itemBuilder: (context, index) => createCards(index, 4)),
-              )
-            ],
-          ),
-          Container(
-            padding:
-                const EdgeInsets.symmetric(vertical: defaultColumnSpacingMd),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: defaultPadding),
-                  child: Text(homeSection2Title,
-                      style: homePageSectionHeadingStyle),
-                ),
-                const SizedBox(height: defaultColumnSpacingMd),
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: defaultPadding),
-                  child: Text(homeSection2Subtitle,
-                      style: homePageSectionParagraphStyle),
-                ),
-                const SizedBox(height: defaultColumnSpacingLg),
-                SizedBox(
-                  height: 350,
-                  width: MediaQuery.of(context).size.width,
-                  child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: 4,
-                      itemBuilder: (context, index) =>
-                          createCourseCard(index, context, 3)),
-                )
-              ],
-            ),
-          )
-        ],
-      ),
-    ),
-  );
-}

@@ -21,6 +21,9 @@ const String userDetails = "User Details";
 
 const String noAccount = "Don't have an account?";
 const String createAccount = " Create Account";
+const String checkOut = "Check out our ";
+const String keyFeatures = "Key Features ";
+const String allCourses = "Courses";
 
 const String or = "OR";
 const String signWithGoogle = "Sign-in with Google";

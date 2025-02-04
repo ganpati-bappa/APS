@@ -73,195 +73,208 @@ class _EditGroupState extends State<EditGroup> {
                     ),
                     centerTitle: false,
                   ),
-                  body: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: defaultPaddingMd),
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                Align(
-                                  alignment: Alignment.center,
-                                  child: Stack(
-                                    clipBehavior: Clip.none,
+                  body: SingleChildScrollView(
+                    child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: defaultPaddingMd),
+                        height: MediaQuery.of(context).size.height,
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  Align(
                                     alignment: Alignment.center,
-                                    children: [
-                                      getGroupDp(
-                                          group, 25, isLocalImage, context),
-                                      Positioned(
-                                          right: -2,
-                                          bottom: -2,
-                                          child: InkWell(
-                                            onTap: () {
-                                              openBottomSheetImagePicker(
-                                                  context, (params) {
-                                                if (params["image"] != null) {
-                                                  setState(() {
-                                                    isGroupDpUpdated = true;
-                                                    isLocalImage = true;
-                                                    group = group.copyWith(
-                                                        groupPhoto:
-                                                            params["image"]);
-                                                    Navigator.pop(context);
-                                                  });
-                                                }
-                                              });
-                                            },
-                                            child: Container(
-                                              decoration: const BoxDecoration(
-                                                  color:  Color.fromARGB(255, 253, 120, 129),
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(20))),
-                                              child: const Padding(
-                                                padding: EdgeInsets.all(10.0),
-                                                child: Icon(
-                                                  Icons.edit_outlined,
-                                                  color: Colors.white,
-                                                  size: 16,
+                                    child: Stack(
+                                      clipBehavior: Clip.none,
+                                      alignment: Alignment.center,
+                                      children: [
+                                        getGroupDp(
+                                            group, 25, isLocalImage, context),
+                                        Positioned(
+                                            right: -2,
+                                            bottom: -2,
+                                            child: InkWell(
+                                              onTap: () {
+                                                openBottomSheetImagePicker(
+                                                    context, (params) {
+                                                  if (params["image"] != null) {
+                                                    setState(() {
+                                                      isGroupDpUpdated = true;
+                                                      isLocalImage = true;
+                                                      group = group.copyWith(
+                                                          groupPhoto:
+                                                              params["image"]);
+                                                      Navigator.pop(context);
+                                                    });
+                                                  }
+                                                });
+                                              },
+                                              child: Container(
+                                                decoration: const BoxDecoration(
+                                                    color:  Color.fromARGB(255, 253, 120, 129),
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(20))),
+                                                child: const Padding(
+                                                  padding: EdgeInsets.all(10.0),
+                                                  child: Icon(
+                                                    Icons.edit_outlined,
+                                                    color: Colors.white,
+                                                    size: 16,
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          ))
-                                    ],
+                                            ))
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(height: defaultColumnSpacingLg),
-                                TextField(
-                                  controller: _textEditingController,
-                                  maxLength: 30,
-                                  decoration: const InputDecoration(
-                                    prefixIcon: Icon(Icons.keyboard),
-                                    hintText: createGroupInputText,
-                                    contentPadding: EdgeInsets.all(20)
+                                  const SizedBox(height: defaultColumnSpacingLg),
+                                  TextField(
+                                    controller: _textEditingController,
+                                    maxLength: 30,
+                                    decoration: const InputDecoration(
+                                      prefixIcon: Icon(Icons.keyboard),
+                                      hintText: createGroupInputText,
+                                      contentPadding: EdgeInsets.all(20)
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: defaultColumnSpacingXXL,
-                            ),
-                            Text(editGroupSubheading,
-                                style:
-                                    Theme.of(context).textTheme.displayMedium),
-                            const SizedBox(
-                              height: defaultColumnSpacingLg,
-                            ),
-                            Expanded(child:
-                                BlocBuilder<EditGroupBloc, EditGroupState>(
-                                    builder: (context, state) {
-                              if (state is EditGroupUserLoaded) {
-                                if (selected.isEmpty) {
-                                  for (MyUser user in state.users) {
-                                    if (widget.group.users.any((groupUser) =>
-                                        groupUser.id == user.id)) {
-                                      selected.add(true);
-                                    } else {
-                                      selected.add(false);
+                                ],
+                              ),
+                              const SizedBox(
+                                height: defaultColumnSpacingXXL,
+                              ),
+                              Text(editGroupSubheading,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                  style:
+                                      Theme.of(context).textTheme.displayMedium),
+                              const SizedBox(
+                                height: defaultColumnSpacingLg,
+                              ),
+                              Expanded(child:
+                                  BlocBuilder<EditGroupBloc, EditGroupState>(
+                                      builder: (context, state) {
+                                if (state is EditGroupUserLoaded) {
+                                  if (selected.isEmpty) {
+                                    for (MyUser user in state.users) {
+                                      if (widget.group.users.any((groupUser) =>
+                                          groupUser.id == user.id)) {
+                                        selected.add(true);
+                                      } else {
+                                        selected.add(false);
+                                      }
                                     }
                                   }
-                                }
-                                return ListView.builder(
-                                    itemCount: state.users.length,
-                                    itemBuilder: (context, index) {
-                                      return Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: defaultColumnSpacingSm),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  ProfilePicture(
-                                                      name: state
-                                                          .users[index].name.trim(),
-                                                      radius: 23,
-                                                      fontsize: 13),
-                                                  const SizedBox(width: 10),
-                                                  Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.start,
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                          state.users[index]
-                                                              .name,
-                                                          style:
-                                                              Theme.of(context)
-                                                                  .textTheme
-                                                                  .labelMedium),
-                                                      Text(
-                                                          state.users[index]
-                                                              .email,
-                                                          style:
-                                                              Theme.of(context)
-                                                                  .textTheme
-                                                                  .labelSmall),
-                                                      Text(state.users[index].persona!, style: groupAdminStyles,)
-                                                    ],
+                                  return ListView.builder(
+                                      itemCount: state.users.length,
+                                      itemBuilder: (context, index) {
+                                        return Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: defaultColumnSpacingSm),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceBetween,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                SizedBox(
+                                                  width: MediaQuery.of(context).size.width - 100,
+                                                  child: SingleChildScrollView(
+                                                    scrollDirection: Axis.horizontal,
+                                                    child: Row(
+                                                      children: [
+                                                        ProfilePicture(
+                                                            name: state
+                                                                .users[index].name.trim(),
+                                                            radius: 23,
+                                                            fontsize: 13),
+                                                        const SizedBox(width: 10),
+                                                        Column(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment.start,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Text(
+                                                                state.users[index]
+                                                                    .name,
+                                                                style:
+                                                                    Theme.of(context)
+                                                                        .textTheme
+                                                                        .labelMedium,
+                                                                ),
+                                                            Text(
+                                                                state.users[index]
+                                                                    .email,
+                                                                style:
+                                                                    Theme.of(context)
+                                                                        .textTheme
+                                                                        .labelSmall),
+                                                            Text(state.users[index].persona!, style: groupAdminStyles,)
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
-                                                ],
-                                              ),
-                                              Checkbox(
-                                                  checkColor: Colors.white,
-                                                  activeColor: Colors.black,
-                                                  value: selected[index],
-                                                  onChanged: (bool? value) {
-                                                    setState(() {
-                                                      selected[index] =
-                                                          !selected[index];
-                                                    });
-                                                  }),
-                                            ],
-                                          ));
-                                    });
-                              } else {
-                                return Center(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Lottie.asset(defaultLoading,
-                                          width: 80, height: 80),
-                                      const SizedBox(
-                                        height: defaultColumnSpacing,
-                                      ),
-                                      Text(
-                                        classroomGroupsLoadingHeading,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .displayLarge,
-                                        textAlign: TextAlign.center,
-                                      ),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      Text(
-                                        "Users are loading",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headlineSmall,
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              }
-                            }))
-                          ])),
+                                                ),
+                                                Checkbox(
+                                                    checkColor: Colors.white,
+                                                    activeColor: Colors.black,
+                                                    value: selected[index],
+                                                    onChanged: (bool? value) {
+                                                      setState(() {
+                                                        selected[index] =
+                                                            !selected[index];
+                                                      });
+                                                    }),
+                                              ],
+                                            ));
+                                      });
+                                } else {
+                                  return Center(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Lottie.asset(defaultLoading,
+                                            width: 80, height: 80),
+                                        const SizedBox(
+                                          height: defaultColumnSpacing,
+                                        ),
+                                        Text(
+                                          classroomGroupsLoadingHeading,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .displayLarge,
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(
+                                          "Users are loading",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headlineSmall,
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }
+                              }))
+                            ])),
+                  ),
                   persistentFooterButtons: [
                     BlocBuilder<EditGroupBloc, EditGroupState>(
                         builder: (context, state) {

@@ -230,51 +230,54 @@ void openBottomSheetFieldEditor(Map<String, dynamic> params, Function handler) {
                   borderRadius: BorderRadius.only(
                       topLeft: bottomSheetRadius, topRight: bottomSheetRadius)),
               padding: const EdgeInsets.all(defaultPadding),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Edit your ${params['field']}",
-                    style: pageHeadingStyle,
-                  ),
-                  const SizedBox(
-                    height: 25,
-                  ),
-                  TextField(
-                    controller: controller,
-                    maxLines: 1,
-                    keyboardType: type,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                    textAlign: TextAlign.left,
-                    textAlignVertical: TextAlignVertical.center,
-                    decoration: const InputDecoration(
-                        isCollapsed: true,
-                        constraints: BoxConstraints(maxHeight: 30),
-                        contentPadding: EdgeInsets.all(0),
-                        prefixIcon: Icon(
-                          Icons.keyboard,
-                          color: Colors.black54,
-                        ),
-                        focusedBorder: UnderlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.black54, width: 2))),
-                  ),
-                  const SizedBox(
-                    height: 18,
-                  ),
-                  Align(
-                    alignment: AlignmentDirectional.bottomEnd,
-                    child: ElevatedButton(
-                        onPressed: () {
-                          handler({"text": controller.text});
-                        },
-                        child: Text(
-                          save,
-                          style: Theme.of(context).textTheme.titleMedium,
-                        )),
-                  )
-                ],
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Edit your ${params['field']}",
+                      style: pageHeadingStyle,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                    ),
+                    const SizedBox(
+                      height: 25,
+                    ),
+                    TextField(
+                      controller: controller,
+                      maxLines: 1,
+                      keyboardType: type,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                      textAlign: TextAlign.left,
+                      textAlignVertical: TextAlignVertical.center,
+                      decoration: const InputDecoration(
+                          isCollapsed: true,
+                          contentPadding: EdgeInsets.all(0),
+                          prefixIcon: Icon(
+                            Icons.keyboard,
+                            color: Colors.black54,
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.black54, width: 2))),
+                    ),
+                    const SizedBox(
+                      height: 18,
+                    ),
+                    Align(
+                      alignment: AlignmentDirectional.bottomEnd,
+                      child: ElevatedButton(
+                          onPressed: () {
+                            handler({"text": controller.text});
+                          },
+                          child: Text(
+                            save,
+                            style: Theme.of(context).textTheme.titleMedium,
+                          )),
+                    )
+                  ],
+                ),
               ),
             ),
           ),
@@ -294,109 +297,111 @@ void openBottomSheetPDFTypePicker(BuildContext context, [Function? handler]) {
                     topLeft: bottomSheetRadius, topRight: bottomSheetRadius)),
             height: 200,
             padding: const EdgeInsets.all(defaultPadding),
-            child: Column(
-              children: [
-                Align(
-                  alignment: Alignment.center,
-                  child: Text("Pick a Document type", style: pageHeadingStyle),
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
-                Row(
-                  children: [
-                    Column(
-                      children: [
-                        InkWell(
-                          onTap: () async {
-                            handler!({
-                              "type": "pdfOffline",
-                            });
-                          },
-                          child: Container(
-                            height: 45,
-                            width: 45,
-                            decoration: BoxDecoration(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Align(
+                    alignment: Alignment.center,
+                    child: Text("Pick a Document type", style: pageHeadingStyle, overflow: TextOverflow.ellipsis, maxLines: 2,),
+                  ),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  Wrap(
+                    children: [
+                      Column(
+                        children: [
+                          InkWell(
+                            onTap: () async {
+                              handler!({
+                                "type": "pdfOffline",
+                              });
+                            },
+                            child: Container(
+                              height: 45,
+                              width: 45,
+                              decoration: BoxDecoration(
+                                  borderRadius: sendButtonRadius,
+                                  color: Colors.blue),
+                              child: const Icon(
+                                Icons.download_for_offline,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Text("Offline PDF", style: bottomSheetTextStyles)
+                        ],
+                      ),
+                      const SizedBox(
+                        width: 30,
+                      ),
+                      Column(
+                        children: [
+                          InkWell(
+                            onTap: () async {
+                              handler!({
+                                "type": "pdf",
+                              });
+                            },
+                            child: Container(
+                              height: 45,
+                              width: 45,
+                              decoration: BoxDecoration(
+                                color: Colors.red,
                                 borderRadius: sendButtonRadius,
-                                color: Colors.blue),
-                            child: const Icon(
-                              Icons.download_for_offline,
-                              color: Colors.white,
-                              size: 20,
+                              ),
+                              child: const Icon(
+                                Icons.picture_as_pdf,
+                                color: Colors.white,
+                                size: 20,
+                              ),
                             ),
                           ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Text("Offline PDF", style: bottomSheetTextStyles)
-                      ],
-                    ),
-                    const SizedBox(
-                      width: 30,
-                    ),
-                    Column(
-                      children: [
-                        InkWell(
-                          onTap: () async {
-                            handler!({
-                              "type": "pdf",
-                            });
-                          },
-                          child: Container(
-                            height: 45,
-                            width: 45,
-                            decoration: BoxDecoration(
-                              color: Colors.green,
-                              borderRadius: sendButtonRadius,
-                            ),
-                            child: const Icon(
-                              Icons.browse_gallery_outlined,
-                              color: Colors.white,
-                              size: 20,
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Text("PDF", style: bottomSheetTextStyles)
+                        ],
+                      ),
+                      const SizedBox(
+                        width: 30,
+                      ),
+                      Column(
+                        children: [
+                          InkWell(
+                            onTap: () async {
+                              handler!({
+                                "type": "docx",
+                              });
+                            },
+                            child: Container(
+                              height: 45,
+                              width: 45,
+                              decoration: BoxDecoration(
+                                color: Colors.green,
+                                borderRadius: sendButtonRadius,
+                              ),
+                              child: const Icon(
+                                Icons.document_scanner,
+                                color: Colors.white,
+                                size: 20,
+                              ),
                             ),
                           ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Text("PDF", style: bottomSheetTextStyles)
-                      ],
-                    ),
-                    const SizedBox(
-                      width: 30,
-                    ),
-                    Column(
-                      children: [
-                        InkWell(
-                          onTap: () async {
-                            handler!({
-                              "type": "docx",
-                            });
-                          },
-                          child: Container(
-                            height: 45,
-                            width: 45,
-                            decoration: BoxDecoration(
-                              color: Colors.green,
-                              borderRadius: sendButtonRadius,
-                            ),
-                            child: const Icon(
-                              Icons.browse_gallery_outlined,
-                              color: Colors.white,
-                              size: 20,
-                            ),
+                          const SizedBox(
+                            height: 10,
                           ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Text("Docx", style: bottomSheetTextStyles)
-                      ],
-                    ),
-                  ],
-                ),
-              ],
+                          Text("Docx", style: bottomSheetTextStyles)
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -415,82 +420,84 @@ void openBottomSheetImagePicker(BuildContext context, [Function? handler]) {
                     topLeft: bottomSheetRadius, topRight: bottomSheetRadius)),
             height: 200,
             padding: const EdgeInsets.all(defaultPadding),
-            child: Column(
-              children: [
-                Align(
-                  alignment: Alignment.center,
-                  child: Text(photoPick, style: pageHeadingStyle),
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
-                Row(
-                  children: [
-                    Column(
-                      children: [
-                        InkWell(
-                          onTap: () async {
-                            XFile? file = await openImagePicker(
-                                context, ImageSource.camera);
-                            handler!({
-                              "image": file!.path,
-                            });
-                          },
-                          child: Container(
-                            height: 45,
-                            width: 45,
-                            decoration: BoxDecoration(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Align(
+                    alignment: Alignment.center,
+                    child: Text(photoPick, style: pageHeadingStyle, overflow: TextOverflow.ellipsis, maxLines: 2),
+                  ),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  Wrap(
+                    children: [
+                      Column(
+                        children: [
+                          InkWell(
+                            onTap: () async {
+                              XFile? file = await openImagePicker(
+                                  context, ImageSource.camera);
+                              handler!({
+                                "image": file!.path,
+                              });
+                            },
+                            child: Container(
+                              height: 45,
+                              width: 45,
+                              decoration: BoxDecoration(
+                                  borderRadius: sendButtonRadius,
+                                  color: Colors.blue),
+                              child: const Icon(
+                                Icons.camera_alt_outlined,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Text(camera, style: bottomSheetTextStyles)
+                        ],
+                      ),
+                      const SizedBox(
+                        width: 30,
+                      ),
+                      Column(
+                        children: [
+                          InkWell(
+                            onTap: () async {
+                              XFile? file = await openImagePicker(
+                                  context, ImageSource.gallery);
+                              handler!({
+                                "image": file!.path,
+                              });
+                            },
+                            child: Container(
+                              height: 45,
+                              width: 45,
+                              decoration: BoxDecoration(
+                                color: Colors.green,
                                 borderRadius: sendButtonRadius,
-                                color: Colors.blue),
-                            child: const Icon(
-                              Icons.camera_alt_outlined,
-                              color: Colors.white,
-                              size: 20,
+                              ),
+                              child: const Icon(
+                                Icons.browse_gallery_outlined,
+                                color: Colors.white,
+                                size: 20,
+                              ),
                             ),
                           ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Text(camera, style: bottomSheetTextStyles)
-                      ],
-                    ),
-                    const SizedBox(
-                      width: 30,
-                    ),
-                    Column(
-                      children: [
-                        InkWell(
-                          onTap: () async {
-                            XFile? file = await openImagePicker(
-                                context, ImageSource.gallery);
-                            handler!({
-                              "image": file!.path,
-                            });
-                          },
-                          child: Container(
-                            height: 45,
-                            width: 45,
-                            decoration: BoxDecoration(
-                              color: Colors.green,
-                              borderRadius: sendButtonRadius,
-                            ),
-                            child: const Icon(
-                              Icons.browse_gallery_outlined,
-                              color: Colors.white,
-                              size: 20,
-                            ),
+                          const SizedBox(
+                            height: 10,
                           ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Text(gallery, style: bottomSheetTextStyles)
-                      ],
-                    ),
-                  ],
-                ),
-              ],
+                          Text(gallery, style: bottomSheetTextStyles)
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -1161,6 +1168,8 @@ Widget loadingPage(BuildContext context, String heading, String subHeading,
             Text(
               heading,
               style: Theme.of(context).textTheme.labelLarge,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(
               height: defaultColumnSpacingMd,
@@ -1169,9 +1178,121 @@ Widget loadingPage(BuildContext context, String heading, String subHeading,
               subHeading,
               style: Theme.of(context).textTheme.labelSmall,
               textAlign: TextAlign.center,
+              maxLines: 4,
+              overflow: TextOverflow.ellipsis,
             )
           ],
         ),
+      ),
+    ),
+  );
+}
+
+
+Widget homePage(context) {
+  return SafeArea(
+    child: SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(defaultPadding),
+            child: Row(
+              children: [
+                ClipOval(
+                  child: Image.asset(
+                    logo,
+                    height: 70,
+                    width: 70,
+                  ),
+                ),
+                const SizedBox(
+                  width: 5,
+                ),
+                Expanded(
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          homeTitle,
+                          style: homePageHeadingStyle,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                        Text(homeSubtitle,
+                        style: homePageSubheadingStyle,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        ),
+                      ]),
+                ),
+              ],
+            ),
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
+                child:
+                    Text(homeSection1Title, style: homePageSectionHeadingStyle),
+              ),
+              const SizedBox(height: defaultColumnSpacingSm),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
+                child: Text(homeSection1Subtitle,
+                    style: homePageSectionParagraphStyle),
+              ),
+              const SizedBox(
+                height: defaultColumnSpacingMd,
+              ),
+              SizedBox(
+                height: 350,
+                width: MediaQuery.of(context).size.width,
+                child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: 5,
+                    itemBuilder: (context, index) => createCards(index, 4)),
+              )
+            ],
+          ),
+          Container(
+            padding:
+                const EdgeInsets.symmetric(vertical: defaultColumnSpacingMd),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: defaultPadding),
+                  child: Text(homeSection2Title,
+                      style: homePageSectionHeadingStyle),
+                ),
+                const SizedBox(height: defaultColumnSpacingMd),
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: defaultPadding),
+                  child: Text(homeSection2Subtitle,
+                      style: homePageSectionParagraphStyle),
+                ),
+                const SizedBox(height: defaultColumnSpacingLg),
+                SizedBox(
+                  height: 350,
+                  width: MediaQuery.of(context).size.width,
+                  child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: 4,
+                      itemBuilder: (context, index) =>
+                          createCourseCard(index, context, 3)),
+                )
+              ],
+            ),
+          )
+        ],
       ),
     ),
   );

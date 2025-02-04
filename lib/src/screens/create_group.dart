@@ -25,6 +25,7 @@ class _CreateGroup extends State<CreateGroup> {
   late MyUser admin;
   int selectedIndex = 0;
   String groupPhoto = "";
+  
 
   @override
   Widget build(BuildContext context) {
@@ -58,105 +59,114 @@ class _CreateGroup extends State<CreateGroup> {
             title: Text(createNewGroup,
                 style: pageHeadingStyle),
           ),
-          body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: defaultPaddingMd),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    GestureDetector(
-                        onTap: () {
-                          openBottomSheetImagePicker(context, (params) {
-                            if (params["image"] != null) {
-                              setState(() {
-                                groupPhoto = params["image"];
-                                Navigator.pop(context);
-                              });
-                            }
-                          });
-                        },
-                        child: getGroupPhoto(context, groupPhoto)),
-                    const SizedBox(height: defaultColumnSpacingLg),
-                    TextField(
-                      controller: _textEditingController,
-                      maxLength: 30,
-                      decoration: const InputDecoration(
-                        prefixIcon: Icon(Icons.keyboard),
-                        hintText: createGroupInputText,
-                        contentPadding: EdgeInsets.all(20)
+          body: SingleChildScrollView(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: defaultPaddingMd),
+              height: MediaQuery.of(context).size.height,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const SizedBox(
+                        height: 20,
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: defaultColumnSpacingXXL,
-                ),
-                Text(selectGroupAdmin,
-                    style: Theme.of(context).textTheme.labelMedium),
-                const SizedBox(
-                  height: defaultColumnSpacingLg,
-                ),
-                Expanded(
-                  child: ListView.builder(
-                      itemCount: widget.users.length,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: defaultColumnSpacingSm),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  ProfilePicture(
-                                      name: widget.users[index].name.trim(),
-                                      radius: 23,
-                                      fontsize: 13),
-                                  const SizedBox(width: 10),
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(widget.users[index].name,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .labelMedium),
-                                      Text(widget.users[index].email,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .labelSmall),
-                                      Text(widget.users[index].persona!, style: groupAdminStyles,)
-                                    ],
+                      GestureDetector(
+                          onTap: () {
+                            openBottomSheetImagePicker(context, (params) {
+                              if (params["image"] != null) {
+                                setState(() {
+                                  groupPhoto = params["image"];
+                                  Navigator.pop(context);
+                                });
+                              }
+                            });
+                          },
+                          child: getGroupPhoto(context, groupPhoto)),
+                      const SizedBox(height: defaultColumnSpacingLg),
+                      TextField(
+                        controller: _textEditingController,
+                        maxLength: 30,
+                        decoration: const InputDecoration(
+                          prefixIcon: Icon(Icons.keyboard),
+                          hintText: createGroupInputText,
+                          contentPadding: EdgeInsets.all(20)
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: defaultColumnSpacingXXL,
+                  ),
+                  Text(selectGroupAdmin,
+                      style: Theme.of(context).textTheme.labelMedium),
+                  const SizedBox(
+                    height: defaultColumnSpacingLg,
+                  ),
+                  Expanded(
+                    child: ListView.builder(
+                        itemCount: widget.users.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: defaultColumnSpacingSm),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  width: MediaQuery.of(context).size.width - 100,
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        ProfilePicture(
+                                            name: widget.users[index].name.trim(),
+                                            radius: 23,
+                                            fontsize: 13),
+                                        const SizedBox(width: 10),
+                                        Column(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(widget.users[index].name,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .labelMedium),
+                                            Text(widget.users[index].email,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .labelSmall),
+                                            Text(widget.users[index].persona!, style: groupAdminStyles,)
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ],
-                              ),
-                              Radio(
-                                  activeColor: Colors.black,
-                                  value: index,
-                                  groupValue: selectedIndex,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      selectedIndex = value!;
-                                      admin = widget.users[selectedIndex];
-                                    });
-                                  })
-                            ],
-                          ),
-                        );
-                      }),
-                )
-              ],
+                                ),
+                                Radio(
+                                    activeColor: Colors.black,
+                                    value: index,
+                                    groupValue: selectedIndex,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        selectedIndex = value!;
+                                        admin = widget.users[selectedIndex];
+                                      });
+                                    })
+                              ],
+                            ),
+                          );
+                        }),
+                  )
+                ],
+              ),
             ),
           ),
           persistentFooterButtons: [
