@@ -58,7 +58,7 @@ class GroupsBloc extends Bloc<GroupsEvent, GroupsState> {
     });
 
     on<GetLastMessage>((event, emit) async {
-      final Messages lastMessage = await chatGroupsRepository.getLastMessage(event.groupId!);
+      final Messages lastMessage = await chatGroupsRepository.getLastMessage(event.groupId);
       emit(LastMessageFetched(lastMessage: lastMessage, groupId: event.groupId));
     });
   }

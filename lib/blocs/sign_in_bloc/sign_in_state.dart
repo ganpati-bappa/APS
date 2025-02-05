@@ -18,3 +18,7 @@ final class SignInFailure extends SignInState {
 }
 
 final class SignInProgress extends SignInState {}
+
+final class ForgotPasswordLoading extends SignInState {}
+
+final class ForgotPasswordEmailSent extends SignInState {}

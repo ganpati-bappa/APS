@@ -1,6 +1,7 @@
 import 'package:aps/blocs/authentication_bloc/authentication_bloc_bloc.dart';
 import 'package:aps/blocs/sign_in_bloc/sign_in_bloc.dart';
 import 'package:aps/blocs/sign_up_bloc/sign_up_bloc.dart';
+import 'package:aps/src/constants/colors.dart';
 import 'package:aps/src/constants/styles.dart';
 import 'package:aps/src/screens/guestHome.dart';
 import 'package:aps/src/screens/sign_up.dart';
@@ -25,6 +26,7 @@ class _LoginPageState extends State<StatefulWidget> {
   String errorMessage = "";
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController forgotEmailController = TextEditingController();
   late final Bloc signInBloc;
   late final UserRepository userRepository;
 
@@ -48,13 +50,22 @@ class _LoginPageState extends State<StatefulWidget> {
         ScaffoldMessenger.of(context).hideCurrentSnackBar();
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: customSnackbar(context, state.message)));
+      } else if (state is ForgotPasswordEmailSent) {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: customSnackbar(context, "Email Sent. Please check your inbox")));
+        
       }
     }, child: BlocBuilder<SignInBloc, SignInState>(
+      buildWhen: (context, state) => true,
       builder: (context, state) {
         if (state is SignInProgress) {
           return loadingPage(context, "Logging you in !!",
               "Even the best password needs a moment");
-        } else {
+        } else if (state is ForgotPasswordLoading) {
+          return loadingPage(context, "The hamster's on it!","Our hamster is working round the clock  to fetch your reset link! ");
+        } 
+        else {
           return Scaffold(
               body: SingleChildScrollView(
             child: Container(
@@ -118,16 +129,103 @@ class _LoginPageState extends State<StatefulWidget> {
                                             Icons.remove_red_eye_rounded),
                                   )),
                             ),
-                            // const SizedBox(height: defaultColumnSpacingSm),
-                            // const Align(
-                            //     alignment: Alignment.centerRight,
-                            //     child: TextButton(
-                            //         onPressed: null,
-                            //         child: Text(forgotPassword,
-                            //             style: TextStyle(
-                            //                 color: Colors.blueAccent,
-                            //                 fontSize: 12)))),
-                            const SizedBox(height: defaultColumnSpacing),
+                            const SizedBox(height: defaultColumnSpacingSm),
+                            Align(
+                                alignment: Alignment.centerRight,
+                                child: TextButton(
+                                    onPressed: () {
+                                      showDialog(
+                                              context: context,
+                                              builder: (BuildContext _) {
+                                                return AlertDialog(
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10.0),
+                                                  ),
+                                                  backgroundColor:
+                                                      backgroundColor,
+                                                  actionsPadding: const EdgeInsets
+                                                      .only(
+                                                      right: defaultPaddingMd,
+                                                      bottom:
+                                                          defaultColumnSpacingSm,
+                                                      left: defaultPaddingMd),
+                                                  title: Text(
+                                                    "Forgot Password",
+                                                    maxLines: 1,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: pageHeadingStyle,
+                                                  ),
+                                                  content: SizedBox(
+                                                    height: 120,
+                                                    child: SingleChildScrollView(
+                                                      child: Column(
+                                                        children: [
+                                                          const Text(
+                                                              "Please enter your registered email address, and a password reset link will be sent to you."),
+                                                          const SizedBox(height: 20,),
+                                                          TextFormField(
+                                                            controller:
+                                                                forgotEmailController,
+                                                            decoration:
+                                                                const InputDecoration(
+                                                                    prefixIcon:
+                                                                         Icon(Icons
+                                                                            .email_sharp),
+                                                                    labelText:
+                                                                        registeredEmailId,
+                                                                    constraints:  BoxConstraints(maxHeight: 100),
+                                                                    hintText:
+                                                                        registeredEmailId,
+                                                                    border:  OutlineInputBorder(
+                                                                        borderRadius:
+                                                                            BorderRadius
+                                                                                .all(
+                                                                                    inputBorderRadius)),
+                                                                    ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  actions: [
+                                                    TextButton(
+                                                        onPressed: () {
+                                                          Navigator.pop(_);
+                                                        },
+                                                        child: const Text(
+                                                          "Cancel",
+                                                          style: TextStyle(
+                                                              color: Colors.grey,
+                                                              fontSize: 16),
+                                                        )),
+                                                    TextButton(
+                                                        onPressed: () {
+                                                          Navigator.pop(_);
+                                                          context.read<SignInBloc>().add(ForgotPasswordRequired(email: forgotEmailController.text.trim()));
+                                                        },
+                                                        child: const Text(
+                                                          "Send",
+                                                          style: TextStyle(
+                                                              fontSize: 16,
+                                                              color:
+                                                                  Color.fromARGB(
+                                                                      255,
+                                                                      223,
+                                                                      86,
+                                                                      76)),
+                                                        ))
+                                                  ],
+                                                );
+                                              });
+                                    },
+                                    child: const Text(forgotPassword,
+                                        style: TextStyle(
+                                            color: Colors.blueAccent,
+                                            fontSize: 14)))),
+                            const SizedBox(height: defaultColumnSpacingSm),
                             SizedBox(
                                 width: double.infinity,
                                 child: ElevatedButton(

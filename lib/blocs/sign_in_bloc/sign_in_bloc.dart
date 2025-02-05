@@ -20,7 +20,7 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
         if (event.email.isEmpty || event.password.isEmpty) {
           throw Exception("Email and password field can not be empty");
         }
-        await _userRepository.signIn(event.email, event.password);
+        await _userRepository.signIn(event.email.trim(), event.password);
         emit(SignInSuccess());
       } catch (ex) {
         log(ex.toString());
@@ -33,6 +33,17 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
         await _userRepository.logout();
       } catch (ex) {
         log(ex.toString());
+      }
+    });
+
+    on<ForgotPasswordRequired>((event, emit) async {
+      try {
+        emit(ForgotPasswordLoading());
+        await _userRepository.forgotPassword(event.email);
+        emit(ForgotPasswordEmailSent());
+      } catch (ex) {
+        print(ex);
+        emit(SignInFailure(message: ex.toString()));
       }
     });
   }

@@ -1,7 +1,4 @@
 import 'dart:io';
-
-import 'package:aps/blocs/add_user_bloc/add_user_bloc.dart';
-import 'package:aps/blocs/chats_bloc/chat_bloc.dart';
 import 'package:aps/blocs/edit_group/edit_group_bloc.dart';
 import 'package:aps/src/constants/colors.dart';
 import 'package:aps/src/constants/images.dart';
@@ -18,7 +15,8 @@ import 'package:user_repository/user_repository.dart';
 
 class EditGroup extends StatefulWidget {
   final Groups group;
-  const EditGroup({required this.group, super.key});
+  final MyUser user;
+  const EditGroup({required this.group, required this.user, super.key});
 
   @override
   State<EditGroup> createState() => _EditGroupState();
@@ -212,13 +210,13 @@ class _EditGroupState extends State<EditGroup> {
                                                                         .textTheme
                                                                         .labelMedium,
                                                                 ),
-                                                            Text(
+                                                            (widget.user.persona == "Admin") ? Text(
                                                                 state.users[index]
                                                                     .email,
                                                                 style:
                                                                     Theme.of(context)
                                                                         .textTheme
-                                                                        .labelSmall),
+                                                                        .labelSmall) : const SizedBox(),
                                                             Text(state.users[index].persona!, style: groupAdminStyles,)
                                                           ],
                                                         ),

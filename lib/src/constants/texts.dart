@@ -8,6 +8,7 @@ const String loginPassword = "Password";
 const String retypePassword = "Re-Type Password";
 const String forgotPassword = "Forget Password ?";
 const String login = "Sign In";
+const String registeredEmailId = "Registered Email ID";
 
 const String addUserSnackBarText = "Please add one or more users to the group";
 const String createNewGroup = "Create New Group";

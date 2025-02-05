@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'models/my_user.dart';
@@ -17,4 +15,5 @@ abstract class UserRepository {
   Future<void> updateUserProfile(String field, String value);
   Future<void> deleteAccount(MyUser user, String password);
   Future<void> reAuthenticateUser(String email, String password);
+  Future<void> forgotPassword(String email);
 }

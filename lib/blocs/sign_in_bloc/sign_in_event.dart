@@ -20,3 +20,8 @@ class SignInRequired extends SignInEvent {
 class SignOutRequired extends SignInEvent {
   const SignOutRequired();
 }
+
+class ForgotPasswordRequired extends SignInEvent {
+  final String email;
+  const ForgotPasswordRequired({required this.email});
+}

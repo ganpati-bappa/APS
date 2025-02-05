@@ -1,8 +1,5 @@
-import 'dart:io';
-
 import 'package:aps/blocs/groups_bloc/groups_bloc.dart';
 import 'package:aps/blocs/personal_chat_creation/personal_chat_creation_bloc.dart';
-import 'package:aps/main.dart';
 import 'package:aps/src/constants/colors.dart';
 import 'package:aps/src/constants/images.dart';
 import 'package:aps/src/constants/spacings.dart';
@@ -88,7 +85,7 @@ class _PersonalChatCreationState extends State<PersonalChatCreation> {
                             height: defaultColumnSpacing,
                           ),
                           Text(
-                            classroomGroupsLoadingHeading,
+                            "Nothing to see here",
                             style: Theme.of(context).textTheme.displayLarge,
                             textAlign: TextAlign.center,
                           ),
@@ -96,7 +93,7 @@ class _PersonalChatCreationState extends State<PersonalChatCreation> {
                             height: 10,
                           ),
                           Text(
-                            classroomGroupsLoadingSubheading,
+                            "No Personal Chat avalaible",
                             style: Theme.of(context).textTheme.headlineSmall,
                             textAlign: TextAlign.center,
                           ),
@@ -170,7 +167,7 @@ Widget buildUserChatRow(dynamic user, BuildContext context, MyUser curUser) {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(user.name, style: Theme.of(context).textTheme.labelMedium),
-                  Text(user.email, style: Theme.of(context).textTheme.labelSmall)
+                  (curUser.persona! == "Admin") ? Text(user.email, style: Theme.of(context).textTheme.labelSmall) : const SizedBox()
                 ],
               ),
             ),

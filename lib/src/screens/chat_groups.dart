@@ -253,7 +253,7 @@ class _IndividualChatGroup extends State<IndividualChatGroup> {
                                                               EditGroupBloc>(
                                                           context),
                                                       child: EditGroup(
-                                                          group: localGroup!),
+                                                          group: localGroup!, user: currentUser,),
                                                     )));
                                     if (updatedGroup != null) {
                                       setState(() {

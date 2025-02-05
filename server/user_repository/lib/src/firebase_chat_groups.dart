@@ -255,7 +255,7 @@ class FirebaseChatGroupRepository extends FirebaseUserRepository implements Chat
           updatedTime: Timestamp.now(), 
           adminName: curUser.name, 
           lastMessage: null,
-          groupPhoto: sender.picture,
+          groupPhoto: "",
           type: "Personal"
         ));
         group = await groupRef.get().then((doc) => Groups.fromEntity(GroupsEntity.fromDocument(doc.data() as Map<String, dynamic>)));
